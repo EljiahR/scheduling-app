@@ -1,4 +1,5 @@
 /* @refresh reload */
+import "./global.css";
 import { render } from 'solid-js/web';
 import 'solid-devtools';
 

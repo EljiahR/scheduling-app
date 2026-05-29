@@ -1,10 +1,11 @@
 import type { Component } from 'solid-js';
 import Comp from './Comp';
+import NavBar from './components/NavBar';
 
 const App: Component = () => {
   return (
     <>
-      <h1>Hello world!!!!</h1>
+      <NavBar />
       <Comp />
     </>
   );

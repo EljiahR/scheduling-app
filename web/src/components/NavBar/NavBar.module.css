@@ -1,5 +1,10 @@
-#nav-bar {
+#navbar {
     width: 100vw;
     height: 50px;
-    background-color: rgb(226, 226, 226);
+    background-color: #bae8e8;
+    box-shadow: black 0px 2px 10px -3px;
+    padding: 2px;
+    display: flex;
+    justify-content: end;
+    align-items: center;
 }

@@ -1,6 +1,8 @@
+import styles from "./NavBar.module.css";
+
 export default () => {
     return (
-        <nav id="nav-bar">
+        <nav id={styles.navbar}>
             <div>Hello World</div>
         </nav>
     )
