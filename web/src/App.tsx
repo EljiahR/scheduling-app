@@ -1,12 +1,10 @@
-import type { Component } from 'solid-js';
-import NavBar from './components/NavBar';
-import HomePage from './components/HomePage';
+import type { Component, JSXElement } from 'solid-js';
+import { RouteSectionProps } from '@solidjs/router';
 
-const App: Component = () => {
+const App: Component<RouteSectionProps<unknown>> = (props) => {
   return (
     <>
-      <NavBar />
-      <HomePage />
+      {props.children}
     </>
   );
 };
