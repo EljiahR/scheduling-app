@@ -5,10 +5,10 @@ import { Route, Router } from "@solidjs/router";
 import 'solid-devtools';
 import App from "./App";
 import { lazy } from "solid-js";
-import Main from "./components/Main";
+import Main from "./layouts/Main";
 
-const AuthPage = lazy(() => import("./components/AuthPage"));
-const HomePage = lazy(() => import("./components/HomePage"));
+const AuthPage = lazy(() => import("./pages/Auth"));
+const HomePage = lazy(() => import("./pages/Home"));
 
 const root = document.getElementById('root');
 

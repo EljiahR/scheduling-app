@@ -1,5 +1,5 @@
-import Card from "../Card";
-import styles from "./HomePage.module.css";
+import Card from "../../components/Card";
+import styles from "./Home.module.css";
 
 export default () => {
     return (

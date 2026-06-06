@@ -1,5 +1,5 @@
-import Card from "../Card"
-import styles from "./AuthPage.module.css"
+import Card from "../../components/Card"
+import styles from "./Auth.module.css"
 
 export default () => {
     return (
