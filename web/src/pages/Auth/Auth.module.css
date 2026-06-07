@@ -5,3 +5,69 @@
     align-items: center;
     justify-content: center;
 }
+
+#authform {
+    height: 100%;
+    padding: 12px;
+    width: clamp(200px, 20em, 600px);
+    background-color: inherit;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 9px;
+}
+
+.floatlabel {
+    width: 100%;
+    position: relative;
+    background-color: inherit;
+}
+
+.floatlabel > * {
+    display: inline-block;
+}
+
+.floatlabel > label {
+    color: #707070;
+    position: absolute;
+    top: 15px;
+    left: 9px;
+    background-color: inherit;
+    transition-duration: 60ms;
+}
+
+.floatlabel > input:focus + label, .floatlabel > input:not(:placeholder-shown) + label{
+    color:#000;
+    top: -9px;
+}
+
+.floatlabel > input {
+    width: 100%;
+    border: 1px solid #00766a;
+    border-radius: 3px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 9px;
+}
+
+.floatlabel > input:focus {
+    outline: 1px solid #00685d;
+    border-radius: 3px;
+}
+
+#authform > button {
+    font-size: 1.2em;
+    background-color: #00766a;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    width: 100%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    cursor: pointer;
+}
+
+#authform > button:hover { 
+    background-color: #008578;
+}
