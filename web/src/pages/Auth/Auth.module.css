@@ -1,4 +1,4 @@
-#authpage {
+#authPage {
     height: 100%;
     width: 100%;
     display: flex;
@@ -6,7 +6,7 @@
     justify-content: center;
 }
 
-#authform {
+#authForm {
     height: 100%;
     padding: 12px;
     width: clamp(200px, 20em, 600px);
@@ -15,20 +15,20 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 9px;
+    gap: 3%;
 }
 
-.floatlabel {
+.floatLabel {
     width: 100%;
     position: relative;
     background-color: inherit;
 }
 
-.floatlabel > * {
+.floatLabel > * {
     display: inline-block;
 }
 
-.floatlabel > label {
+.floatLabel > label {
     color: #707070;
     position: absolute;
     top: 15px;
@@ -37,12 +37,12 @@
     transition-duration: 60ms;
 }
 
-.floatlabel > input:focus + label, .floatlabel > input:not(:placeholder-shown) + label{
+.floatLabel > input:focus + label, .floatLabel > input:not(:placeholder-shown) + label{
     color:#000;
     top: -9px;
 }
 
-.floatlabel > input {
+.floatLabel > input {
     width: 100%;
     border: 1px solid #00766a;
     border-radius: 3px;
@@ -51,12 +51,12 @@
     padding-left: 9px;
 }
 
-.floatlabel > input:focus {
+.floatLabel > input:focus {
     outline: 1px solid #00685d;
     border-radius: 3px;
 }
 
-#authform > button {
+#authForm > button {
     font-size: 1.2em;
     background-color: #00766a;
     color: #fff;
@@ -68,6 +68,18 @@
     cursor: pointer;
 }
 
-#authform > button:hover { 
+#authForm > button:hover { 
     background-color: #008578;
+}
+
+#visiblePassword {
+    width: 100%;
+    display: flex;
+    justify-content: baseline;
+    align-items: center;
+    gap: 3px;
+}
+
+#visiblePassword > label {
+    user-select: none;
 }
