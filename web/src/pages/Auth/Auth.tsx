@@ -1,14 +1,29 @@
 import { createSignal } from "solid-js"
 import Card from "../../components/Card"
 import styles from "./Auth.module.css"
+import LoadingRing from "../../components/LoadingRing";
+import wait from "../../utils/wait";
 
 export default () => {
     const [email, setEmail] = createSignal<string>("");
     const [password, setPassword] = createSignal<string>("");
     const [isPasswordVisible, setIsPasswordVisible] = createSignal<boolean>(false);
+    const [isLoading, setIsLoading] = createSignal<boolean>(false);
 
-    const handleFormSubmit = (e: SubmitEvent) => {
+    const handleFormSubmit = async (e: SubmitEvent) => {
         e.preventDefault();
+
+        try {
+            // send form
+            setIsLoading(true);
+            await wait(1000);
+        } catch (e) {
+            // handle form not good
+        } finally {
+            setPassword("");
+            setIsPasswordVisible(false);
+            setIsLoading(false);
+        }
     };
 
     const handleViewPasswordToggle = () => {
@@ -31,7 +46,7 @@ export default () => {
                         <input id="visible-password-toggle" type="checkbox" checked={isPasswordVisible()} onClick={handleViewPasswordToggle} />
                         <label for="visible-password-toggle">Show Password?</label>
                     </div>
-                    <button type="submit">Sign In</button>
+                    <button type="submit">{isLoading() ? <LoadingRing /> : "Sign In"}</button>
                 </form>
             </Card>
         </div>
