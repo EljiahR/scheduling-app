@@ -87,3 +87,15 @@
 #visiblePassword > label {
     user-select: none;
 }
+
+#error {
+    width: 90%;
+    color: #9d0000;
+    text-align: center;
+    background-color: rgb(255, 134, 134);
+    border: 1px solid #9d0000;
+    border-radius: 3px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin-bottom: 12px;
+}

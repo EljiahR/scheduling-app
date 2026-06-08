@@ -1,14 +1,15 @@
-import { createSignal } from "solid-js"
+import { createSignal, Match, Show, Switch } from "solid-js"
 import Card from "../../components/Card"
 import styles from "./Auth.module.css"
 import LoadingRing from "../../components/LoadingRing";
-import wait from "../../utils/wait";
+import api from "../../utils/api";
 
 export default () => {
     const [email, setEmail] = createSignal<string>("");
     const [password, setPassword] = createSignal<string>("");
     const [isPasswordVisible, setIsPasswordVisible] = createSignal<boolean>(false);
     const [isLoading, setIsLoading] = createSignal<boolean>(false);
+    const [signInError, setSignInError] = createSignal<boolean>(false);
 
     const handleFormSubmit = async (e: SubmitEvent) => {
         e.preventDefault();
@@ -16,9 +17,17 @@ export default () => {
         try {
             // send form
             setIsLoading(true);
-            await wait(1000);
+
+            const response = await api.post("/signin", {
+                body: { email: email(), password: password() }
+            });
+
+            if (response.status !== 200) {
+                throw new Error("unauthorized");
+            }
         } catch (e) {
             // handle form not good
+            setSignInError(true);
         } finally {
             setPassword("");
             setIsPasswordVisible(false);
@@ -34,6 +43,9 @@ export default () => {
         <div id={styles.authPage}>
             <Card styles="width: 80%; max-width: 500px; height: 400px; display: flex; justify-content: center; align-items: center;">
                 <form id={styles.authForm} onSubmit={(e) => handleFormSubmit(e)}>
+                    <Show when={signInError()}>
+                        <div id={styles.error}>Email and/or Password incorrect</div>
+                    </Show>
                     <div class={styles.floatLabel}>
                         <input id="auth-email" type="email" value={email()} onChange={(e) => setEmail(e.target.value)} placeholder="" required />
                         <label for="auth-email">Email</label>
@@ -46,7 +58,16 @@ export default () => {
                         <input id="visible-password-toggle" type="checkbox" checked={isPasswordVisible()} onClick={handleViewPasswordToggle} />
                         <label for="visible-password-toggle">Show Password?</label>
                     </div>
-                    <button type="submit">{isLoading() ? <LoadingRing /> : "Sign In"}</button>
+                    <button type="submit">
+                        <Switch>
+                            <Match when={isLoading()}>
+                                <LoadingRing />
+                            </Match>
+                            <Match when={!isLoading()}>
+                                Sign In
+                            </Match>
+                        </Switch>
+                    </button>
                 </form>
             </Card>
         </div>
