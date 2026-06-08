@@ -6,6 +6,7 @@ import 'solid-devtools';
 import App from "./App";
 import { lazy } from "solid-js";
 import Main from "./layouts/Main";
+import ProtectedRoute from "./layouts/ProtectedRoute";
 
 const AuthPage = lazy(() => import("./pages/Auth"));
 const HomePage = lazy(() => import("./pages/Home"));
@@ -21,6 +22,9 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 render(() => 
   <Router root={App}>
     <Route path={"/"} component={Main}>
+      <Route path={"/"} component={HomePage} />
+    </Route>
+    <Route path="/protected" component={ProtectedRoute}>
       <Route path={"/"} component={HomePage} />
     </Route>
     <Route path={"/auth"} component={AuthPage} />
