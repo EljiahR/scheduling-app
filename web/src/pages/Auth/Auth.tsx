@@ -2,7 +2,7 @@ import { createSignal, Match, onMount, Show, Switch } from "solid-js"
 import Card from "../../components/Card"
 import styles from "./Auth.module.css"
 import LoadingRing from "../../components/LoadingRing";
-import api, { apiRefreshToken } from "../../utils/api";
+import { apiRefreshToken, apiSignIn } from "../../utils/api";
 import { userStore } from "../../utils/userStore";
 // import wait from "../../utils/wait";
 import LoadingBars from "../../components/LoadingBars";
@@ -25,11 +25,9 @@ export default () => {
             // send form
             setIsWaitingSignIn(true);
 
-            const response = await api.post("/auth/signin", {
-                body: { email: email(), password: password() }
-            });
+            const status = await apiSignIn(email(), password());
 
-            if (response.status !== 200) {
+            if (status !== 200) {
                 throw new Error("unauthorized");
             }
         } catch (e) {

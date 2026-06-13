@@ -1,0 +1,1 @@
+export const stringNullUndefinedOrEmpty = (x: string) => x || x !== null || x !== "";

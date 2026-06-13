@@ -1,5 +1,6 @@
 import axios from "axios";
 import { setUserStore, userStore } from "./userStore";
+import { stringNullUndefinedOrEmpty } from "./stringHelpers";
 
 const api = axios.create({
     baseURL: "undefined"
@@ -10,7 +11,7 @@ export const apiRefreshToken = async () => {
     if (existingRefreshToken !== null && existingRefreshToken !== "") {
         try {
             const response = await api.post("/auth/refresh", {
-                body: userStore.refreshToken
+                body: { refreshToken: userStore.refreshToken}
             });
 
             if (response.status !== 200) {
@@ -26,6 +27,37 @@ export const apiRefreshToken = async () => {
             setUserStore("refreshToken", "");
         }
         
+    }
+}
+
+export const apiCheckStatus = async () => {
+    const authToken = userStore.token;
+    const refreshToken = userStore.refreshToken;
+    
+    try {
+        if (!stringNullUndefinedOrEmpty(authToken)) {
+            const response = await api.post("/auth/status", {
+                body: { token: authToken }
+            });
+
+            if (response.status !== 200) {
+                throw new Error("Token is invalid");
+            }
+        }
+    } catch (e) {
+
+    }
+}
+
+export const apiSignIn = async (email: string, password: string) => {
+    try {   
+        const response = await api.post("/auth/signin", {
+            body: { email, password }
+        });
+
+        return response.status;
+    } catch (e) {
+
     }
 }
 

@@ -6,8 +6,9 @@ const ProtectedRoute: Component<RouteSectionProps<unknown>> = (props) => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const checkAuth = () => {
+    const checkAuth = async () => {
         const currentPath = location.pathname;
+        
         navigate(`/auth/redirect=${currentPath}`, { replace: true });
     }
 
