@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "SchedulingServer/1.0.0": {
+        "runtime": {
+          "SchedulingServer.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "SchedulingServer/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
