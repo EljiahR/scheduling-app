@@ -27,6 +27,6 @@ render(() =>
     <Route path="/protected" component={ProtectedRoute}>
       <Route path={"/"} component={HomePage} />
     </Route>
-    <Route path={"/auth"} component={AuthPage} />
+    <Route path={"/auth/:path"} component={AuthPage} />
   </Router>, 
   root!);

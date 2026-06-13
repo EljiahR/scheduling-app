@@ -4,8 +4,9 @@ import styles from "./Auth.module.css"
 import LoadingRing from "../../components/LoadingRing";
 import api, { apiRefreshToken } from "../../utils/api";
 import { userStore } from "../../utils/userStore";
-import wait from "../../utils/wait";
+// import wait from "../../utils/wait";
 import LoadingBars from "../../components/LoadingBars";
+import { useNavigate, useParams } from "@solidjs/router";
 
 export default () => {
     const [email, setEmail] = createSignal<string>("");
@@ -14,6 +15,8 @@ export default () => {
     const [isWaitingSignIn, setIsWaitingSignIn] = createSignal<boolean>(false);
     const [isCheckingAuth, setIsCheckingAuth] = createSignal<boolean>(true);
     const [signInError, setSignInError] = createSignal<boolean>(false);
+    const params = useParams();
+    const navigate = useNavigate();
 
     const handleFormSubmit = async (e: SubmitEvent) => {
         e.preventDefault();
@@ -45,7 +48,7 @@ export default () => {
 
     const checkAuth = async () => {
         console.log("Checking for existing auth")
-        await wait(2000);
+        // await wait(2000); 
         const authToken = userStore.token;
         try {
             if (authToken !== null && authToken !== "") {
@@ -55,7 +58,14 @@ export default () => {
             }
 
             if (userStore.loggedIn) {
-                console.log("User logged in.")
+                console.log("User logged in. Redirecting");
+                let path = params.path;
+                if (path) {
+                    path = path.slice(8);
+                } else {
+                    path = "/protected";
+                }
+                navigate(path, { replace: true });
             } else {
                 console.log("User not logged in.")
             }

@@ -1,12 +1,14 @@
-import { RouteSectionProps, useNavigate } from "@solidjs/router";
+import { RouteSectionProps, useLocation, useNavigate } from "@solidjs/router";
 import { Component, createSignal, onMount, Show } from "solid-js";
 
 const ProtectedRoute: Component<RouteSectionProps<unknown>> = (props) => {
     const [isAuthenticated, setIsAuthenticated] = createSignal<boolean>(false);
+    const location = useLocation();
     const navigate = useNavigate();
 
     const checkAuth = () => {
-        navigate("/auth", { replace: true });
+        const currentPath = location.pathname;
+        navigate(`/auth/redirect=${currentPath}`, { replace: true });
     }
 
     onMount(checkAuth);
