@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
@@ -43,10 +44,36 @@ builder.Services.AddAuthentication(options =>
     };
 });
 builder.Services.AddAuthorization();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowSpecificOrigins",
+        builder =>
+        {
+            builder.WithOrigins("https://web.ereck.net", "https://server.ereck.net");
+            builder.AllowAnyHeader()
+                    .AllowAnyMethod();
+        });
+});
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    //https://learn.microsoft.com/en-us/azure/container-apps/dotnet-overview#define-x-forwarded-headers
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownIPNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
+
 builder.Services.AddScoped<JwtService>();
-builder.Services.AddOpenApi();
 builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddOpenApi();
+
 var app = builder.Build();
+
+app.UseCors();
 
 app.MapGet("/", () => "Hello World!");
 
@@ -55,6 +82,7 @@ app.RegisterAuthEndpoints();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseForwardedHeaders();
     app.MapScalarApiReference();
 }
 app.Run();
