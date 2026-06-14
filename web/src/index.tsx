@@ -7,8 +7,8 @@ import App from "./App";
 import { lazy } from "solid-js";
 import Main from "./layouts/Main";
 import ProtectedRoute from "./layouts/ProtectedRoute";
+import Auth from "./pages/Auth";
 
-const AuthPage = lazy(() => import("./pages/Auth"));
 const HomePage = lazy(() => import("./pages/Home"));
 
 const root = document.getElementById('root');
@@ -27,6 +27,6 @@ render(() =>
     <Route path="/protected" component={ProtectedRoute}>
       <Route path={"/"} component={HomePage} />
     </Route>
-    <Route path={"/auth/:path"} component={AuthPage} />
+    <Route path={"/auth/:path?"} component={Auth} />
   </Router>, 
   root!);

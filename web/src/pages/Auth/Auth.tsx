@@ -57,10 +57,8 @@ export default () => {
 
             if (userStore.loggedIn) {
                 console.log("User logged in. Redirecting");
-                let path = params.path;
-                if (path) {
-                    path = path.slice(8);
-                } else {
+                let path = decodeURIComponent(params.path ?? "");
+                if (path === "") {
                     path = "/protected";
                 }
                 navigate(path, { replace: true });

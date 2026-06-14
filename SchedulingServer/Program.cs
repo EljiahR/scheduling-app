@@ -73,7 +73,7 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-app.UseCors();
+app.UseCors("AllowSpecificOrigins");
 
 app.MapGet("/", () => "Hello World!");
 

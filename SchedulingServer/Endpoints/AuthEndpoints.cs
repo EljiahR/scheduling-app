@@ -8,7 +8,7 @@ public static class AuthEndpoints
 {
     public static void RegisterAuthEndpoints(this WebApplication app)
     {
-        app.MapPost("/auth/signintest", Results<Ok<string>, UnauthorizedHttpResult> (UserFromBody body, JwtService jwtService) => 
+        app.MapPost("/auth/signin", Results<Ok<string>, UnauthorizedHttpResult> (UserFromBody body, JwtService jwtService) => 
         {
             if (body.Email == "admin@admin.com" && body.Password == "password")
             {

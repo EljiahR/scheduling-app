@@ -9,7 +9,7 @@ const ProtectedRoute: Component<RouteSectionProps<unknown>> = (props) => {
     const checkAuth = async () => {
         const currentPath = location.pathname;
         
-        navigate(`/auth/redirect=${currentPath}`, { replace: true });
+        navigate(`/auth/${encodeURIComponent(currentPath)}`, { replace: true });
     }
 
     onMount(checkAuth);

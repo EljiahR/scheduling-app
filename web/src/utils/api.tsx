@@ -2,8 +2,15 @@ import axios from "axios";
 import { setUserStore, userStore } from "./userStore";
 import { stringNullUndefinedOrEmpty } from "./stringHelpers";
 
+const BASEURL = import.meta.env.VITE_API_URL;
+
+if (stringNullUndefinedOrEmpty(BASEURL)) {
+    console.log(BASEURL);
+    throw new Error("VITE_API_URL is not defined.");
+}
+
 const api = axios.create({
-    baseURL: "undefined"
+    baseURL: BASEURL
 });
 
 export const apiRefreshToken = async () => {
