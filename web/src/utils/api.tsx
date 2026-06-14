@@ -43,8 +43,12 @@ export const apiCheckStatus = async () => {
     
     try {
         if (!stringNullUndefinedOrEmpty(authToken)) {
-            const response = await api.post("/auth/status", {
-                token: authToken
+            const response = await api.post("/auth/status", { 
+                refreshToken 
+            }, {
+                headers: {
+                    "Authorization": `Bearer ${authToken}`
+                }
             });
 
             if (response.status !== 200) {
