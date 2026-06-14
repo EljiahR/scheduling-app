@@ -36,6 +36,27 @@
                 "${workspaceFolder}/SchedulingServer/SchedulingServer.csproj"
             ],
             "problemMatcher": "$msCompile"
-        }
+        },
+        {
+            "label": "Start Web Client",
+            "type": "shell",
+            "command": "npm run dev",
+            "options": {
+                "cwd": "${workspaceFolder}/web"
+            }
+        },
+        {
+            "label": "Start Server",
+            "type": "shell",
+            "command": "dotnet run",
+            "options": {
+                "cwd": "${workspaceFolder}/SchedulingServer"
+            }
+        },
+        {
+            "label": "Start All",
+            "dependsOn": ["Start Web Client", "Start Server"],
+            "dependsOrder": "parallel"
+        },
     ]
 }
