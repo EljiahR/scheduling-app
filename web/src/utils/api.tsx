@@ -18,7 +18,7 @@ export const apiRefreshToken = async () => {
     if (existingRefreshToken !== null && existingRefreshToken !== "") {
         try {
             const response = await api.post("/auth/refresh", {
-                body: { refreshToken: userStore.refreshToken}
+                refreshToken: userStore.refreshToken
             });
 
             if (response.status !== 200) {
@@ -44,7 +44,7 @@ export const apiCheckStatus = async () => {
     try {
         if (!stringNullUndefinedOrEmpty(authToken)) {
             const response = await api.post("/auth/status", {
-                body: { token: authToken }
+                token: authToken
             });
 
             if (response.status !== 200) {
@@ -59,7 +59,8 @@ export const apiCheckStatus = async () => {
 export const apiSignIn = async (email: string, password: string) => {
     try {   
         const response = await api.post("/auth/signin", {
-            body: { email, password }
+            email, 
+            password
         });
 
         return response.status;
