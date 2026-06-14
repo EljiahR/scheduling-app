@@ -2,11 +2,12 @@ import { createSignal, Match, onMount, Show, Switch } from "solid-js"
 import Card from "../../components/Card"
 import styles from "./Auth.module.css"
 import LoadingRing from "../../components/LoadingRing";
-import { apiRefreshToken, apiSignIn } from "../../utils/api";
+import { apiCheckStatus, apiRefreshToken, apiSignIn } from "../../utils/api";
 import { userStore } from "../../utils/userStore";
 // import wait from "../../utils/wait";
 import LoadingBars from "../../components/LoadingBars";
 import { useNavigate, useParams } from "@solidjs/router";
+import { stringNullUndefinedOrEmpty } from "../../utils/stringHelpers";
 
 export default () => {
     const [email, setEmail] = createSignal<string>("");
@@ -15,6 +16,7 @@ export default () => {
     const [isWaitingSignIn, setIsWaitingSignIn] = createSignal<boolean>(false);
     const [isCheckingAuth, setIsCheckingAuth] = createSignal<boolean>(true);
     const [signInError, setSignInError] = createSignal<boolean>(false);
+    const [returnPath, setReturnPath] = createSignal<string>("/protected");
     const params = useParams();
     const navigate = useNavigate();
 
@@ -30,6 +32,8 @@ export default () => {
             if (status !== 200) {
                 throw new Error("unauthorized");
             }
+
+            navigate(returnPath(), { replace: true });
         } catch (e) {
             // handle form not good
             setSignInError(true);
@@ -45,25 +49,33 @@ export default () => {
     };
 
     const checkAuth = async () => {
-        console.log("Checking for existing auth")
+        if (params.skipInitialCheck == "skipCheck") {
+            console.log("Skipping auth check.");
+            setIsCheckingAuth(false);
+            return;
+        }
+        
+        console.log("Checking for existing auth...")
         // await wait(2000); 
         const authToken = userStore.token;
+        const refreshToken = userStore.refreshToken;
+        if (!stringNullUndefinedOrEmpty(params.path)) {
+            setReturnPath(params.path);
+        }
+        
         try {
-            if (authToken !== null && authToken !== "") {
-                await apiRefreshToken();
-            } else {
-                // check status
-            }
+            if (stringNullUndefinedOrEmpty(authToken) && stringNullUndefinedOrEmpty(refreshToken)) {
+                throw new Error("No tokens found.");
+            } 
+            
+            await apiCheckStatus();
 
             if (userStore.loggedIn) {
                 console.log("User logged in. Redirecting");
-                let path = decodeURIComponent(params.path ?? "");
-                if (path === "") {
-                    path = "/protected";
-                }
-                navigate(path, { replace: true });
+                navigate(returnPath(), { replace: true });
             } else {
                 console.log("User not logged in.")
+
             }
         } catch (e) {
             // handle error

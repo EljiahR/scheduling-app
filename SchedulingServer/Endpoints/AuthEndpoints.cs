@@ -20,7 +20,7 @@ public static class AuthEndpoints
             return TypedResults.Unauthorized();
         });
 
-        app.MapPost("/auth/status", Results<Ok<string>, UnauthorizedHttpResult> (HttpContext context) => 
+        app.MapPost("/auth/status", Results<Ok<string>, UnauthorizedHttpResult> (RefreshTokenFromBody body, HttpContext context) => 
         {
             if (context.User.Identity?.IsAuthenticated ?? false)
             {

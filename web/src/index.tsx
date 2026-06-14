@@ -27,6 +27,6 @@ render(() =>
     <Route path="/protected" component={ProtectedRoute}>
       <Route path={"/"} component={HomePage} />
     </Route>
-    <Route path={"/auth/:path?"} component={Auth} />
+    <Route path={"/auth/:skipInitialCheck/:path?"} component={Auth} />
   </Router>, 
   root!);

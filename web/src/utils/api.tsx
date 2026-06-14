@@ -27,8 +27,8 @@ export const apiRefreshToken = async () => {
 
             const data = response.data;
 
-            setUserStore("token", data["token"]);
-            setUserStore("refreshToken", data["refreshToken"]);
+            setUserStore("token", data.token);
+            setUserStore("refreshToken", data.refreshToken);
         } catch (e) {
             setUserStore("token", "");
             setUserStore("refreshToken", "");
@@ -54,9 +54,13 @@ export const apiCheckStatus = async () => {
             if (response.status !== 200) {
                 throw new Error("Token is invalid");
             }
+
+            setUserStore("loggedIn", true);
+        } else {
+            throw new Error("No token found.");
         }
     } catch (e) {
-
+        throw e;
     }
 }
 
@@ -66,6 +70,14 @@ export const apiSignIn = async (email: string, password: string) => {
             email, 
             password
         });
+
+        if (response.status === 200) {
+            const data = response.data;
+            
+            setUserStore("loggedIn", true);
+            setUserStore("token", data.token);
+            setUserStore("refreshToken", data.refreshToken);
+        }
 
         return response.status;
     } catch (e) {

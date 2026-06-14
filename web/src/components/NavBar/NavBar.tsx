@@ -7,7 +7,7 @@ export default () => {
         <nav id={styles.navbar} class="theme">
             <A href="/" class="navlink">Home</A>
             <A href="/protected" class="navlink">Protected</A>
-            <A href="/auth" class="navlink">Auth</A>
+            <A href="/auth/checkAuth" class="navlink">Auth</A>
         </nav>
     )
 }
