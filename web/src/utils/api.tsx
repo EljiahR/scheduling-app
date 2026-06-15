@@ -14,11 +14,11 @@ const api = axios.create({
 });
 
 export const apiRefreshToken = async () => {
-    const existingRefreshToken = userStore.refreshToken;
+    const existingRefreshToken = localStorage.getItem("refreshToken");
     if (existingRefreshToken !== null && existingRefreshToken !== "") {
         try {
             const response = await api.post("/auth/refresh", {
-                refreshToken: userStore.refreshToken
+                refreshToken: existingRefreshToken
             });
 
             if (response.status !== 200) {
@@ -28,10 +28,12 @@ export const apiRefreshToken = async () => {
             const data = response.data;
 
             setUserStore("token", data.token);
-            setUserStore("refreshToken", data.refreshToken);
+            // setUserStore("refreshToken", data.refreshToken);
+            localStorage.setItem("refreshToken", data.refreshToken);
         } catch (e) {
             setUserStore("token", "");
-            setUserStore("refreshToken", "");
+            // setUserStore("refreshToken", "");
+            localStorage.removeItem("refreshToken");
         }
         
     }
@@ -39,7 +41,9 @@ export const apiRefreshToken = async () => {
 
 export const apiCheckStatus = async () => {
     const authToken = userStore.token;
-    const refreshToken = userStore.refreshToken;
+    const refreshToken = localStorage.getItem("refreshToken");
+
+    console.log("Token: " + authToken);
     
     try {
         if (!stringNullUndefinedOrEmpty(authToken)) {
@@ -76,7 +80,6 @@ export const apiSignIn = async (email: string, password: string) => {
             
             setUserStore("loggedIn", true);
             setUserStore("token", data.token);
-            setUserStore("refreshToken", data.refreshToken);
         }
 
         return response.status;

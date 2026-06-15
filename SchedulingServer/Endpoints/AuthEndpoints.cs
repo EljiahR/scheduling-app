@@ -8,13 +8,18 @@ public static class AuthEndpoints
 {
     public static void RegisterAuthEndpoints(this WebApplication app)
     {
-        app.MapPost("/auth/signin", Results<Ok<string>, UnauthorizedHttpResult> (UserFromBody body, JwtService jwtService) => 
+        app.MapPost("/auth/signin", Results<Ok<TokenDto>, UnauthorizedHttpResult> (UserFromBody body, JwtService jwtService) => 
         {
             if (body.Email == "admin@admin.com" && body.Password == "password")
             {
                 var token = jwtService.GenerateToken(body.Email);
 
-                return TypedResults.Ok(token);
+                return TypedResults.Ok(new TokenDto 
+                    {
+                        Token = token,
+                        RefreshToken = ""
+                    }
+                 );
             }
 
             return TypedResults.Unauthorized();

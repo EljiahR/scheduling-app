@@ -49,7 +49,7 @@ export default () => {
     };
 
     const checkAuth = async () => {
-        if (params.skipInitialCheck == "skipCheck") {
+        if (params.skipInitialCheck === "skipCheck") {
             console.log("Skipping auth check.");
             setIsCheckingAuth(false);
             return;
@@ -58,7 +58,7 @@ export default () => {
         console.log("Checking for existing auth...")
         // await wait(2000); 
         const authToken = userStore.token;
-        const refreshToken = userStore.refreshToken;
+        const refreshToken = localStorage.getItem("refreshToken");
         if (!stringNullUndefinedOrEmpty(params.path)) {
             setReturnPath(params.path);
         }
@@ -67,7 +67,7 @@ export default () => {
             if (stringNullUndefinedOrEmpty(authToken) && stringNullUndefinedOrEmpty(refreshToken)) {
                 throw new Error("No tokens found.");
             } 
-            
+            console.log("Token found. Requesting status from server...");
             await apiCheckStatus();
 
             if (userStore.loggedIn) {
@@ -79,6 +79,7 @@ export default () => {
             }
         } catch (e) {
             // handle error
+            console.log(e);
         } finally {
             setIsCheckingAuth(false);
         }
