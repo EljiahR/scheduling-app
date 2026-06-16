@@ -37,3 +37,9 @@ body {
 .hover-theme:hover {color:#fff !important; background-color:#009688 !important}
 .hover-text-theme:hover {color:#009688 !important}
 .hover-border-theme:hover {border-color:#009688 !important}
+
+.svg-d5 {fill: #004a43 !important}
+.svg-d5:hover {fill: #008578 !important}
+
+button.theme-d2:hover {color:#fff !important; background-color:#008578 !important}
+

@@ -1,6 +1,6 @@
 .card {
-    min-height: 300px;
-    min-width: 210px;
+    height: 20em;
+    width: clamp(170px, 39%, 300px);
     padding: 6px;
     background-color: #ffffff;
     border-radius: 6px;
@@ -17,4 +17,10 @@
 .cardTitle {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+}
+
+.shortcut {
+    height: 21px;
+    width: 21px;
 }

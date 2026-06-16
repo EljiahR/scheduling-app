@@ -8,6 +8,12 @@ export default () => {
             <PunchCard />
             <Card>f</Card>
             <Card>f</Card>
+            <Card>f</Card>
+            <Card>f</Card>
+            <Card>f</Card>
+            <Card>f</Card>
+            <Card>f</Card>
+            <Card>f</Card>
         </div>
     )
 }
