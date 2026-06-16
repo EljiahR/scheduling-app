@@ -1,7 +1,6 @@
 import { Component, createSignal, lazy, Match, onMount, Show, Switch } from "solid-js";
-import { userStore } from "../../utils/userStore";
+import { setUserStore, userStore } from "../../utils/userStore";
 import { apiCheckStatus } from "../../utils/api";
-import Auth from "../../pages/Auth";
 import LoadingBars from "../../components/LoadingBars";
 
 const AuthPage = lazy(() => import("../../pages/Auth"));
@@ -12,7 +11,10 @@ const ProtectedRoute: Component<any> = (props) => {
     
     const checkAuth = async () => {
         try {
-            await apiCheckStatus();
+            // await apiCheckStatus();
+
+            // For developement purposes
+            setUserStore("loggedIn", true);
         } catch (e) {
             console.log(e);
         } finally {
