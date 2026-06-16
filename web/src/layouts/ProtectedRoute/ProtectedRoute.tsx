@@ -1,22 +1,22 @@
-import { RouteSectionProps, useLocation, useNavigate } from "@solidjs/router";
-import { Component, createSignal, onMount, Show } from "solid-js";
+import { Component, createSignal, lazy, Match, onMount, Show, Switch } from "solid-js";
 import { userStore } from "../../utils/userStore";
 import { apiCheckStatus } from "../../utils/api";
+import Auth from "../../pages/Auth";
+import LoadingBars from "../../components/LoadingBars";
 
-const ProtectedRoute: Component<RouteSectionProps<unknown>> = (props) => {
-    const location = useLocation();
-    const navigate = useNavigate();
+const AuthPage = lazy(() => import("../../pages/Auth"));
 
+
+const ProtectedRoute: Component<any> = (props) => {
+    const [checkingAuth, setCheckingAuth] = createSignal<boolean>(true);
+    
     const checkAuth = async () => {
-        const currentPath = location.pathname;
         try {
             await apiCheckStatus();
         } catch (e) {
             console.log(e);
-        }   
-        
-        if (!userStore.loggedIn) {
-            navigate(`/auth/skipCheck/${encodeURIComponent(currentPath)}`, { replace: true });
+        } finally {
+            setCheckingAuth(false)
         }
 
     }
@@ -24,9 +24,21 @@ const ProtectedRoute: Component<RouteSectionProps<unknown>> = (props) => {
     onMount(checkAuth);
 
     return (
-        <Show when={userStore.loggedIn} fallback={<div>Authenticating user...</div>}>
-            {props.children}
-        </Show>
+       <Show when={!checkingAuth()} fallback={<LoadingBars />}>
+        <Switch>
+            <Match when={userStore.loggedIn}>
+                {props.children}
+            </Match>
+            <Match when={!userStore.loggedIn}>
+                <AuthPage />
+            </Match>
+        </Switch>
+       </Show>
+       
+    
+        // <Show when={userStore.loggedIn} fallback={<div>Authenticating user...</div>}>
+        //     {props.children}
+        // </Show>
     );
 }
 
