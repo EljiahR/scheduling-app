@@ -1,0 +1,26 @@
+#punchCard {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.punchBtn{
+    font-size: 0.9em;
+    background-color: #00766a;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    width: 100%;
+    height: 12%;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+}
+
+.punchBtn:hover { 
+    background-color: #008578;
+}
