@@ -19,7 +19,7 @@ export default (props: CardProps) => {
                 <div class={styles.cardTitle}>
                     <h3>{props.title}</h3>
                     <Show when={!stringNullUndefinedOrEmpty(props.shortcut)}>
-                        <A href={props.shortcut!}><ShortcutSVG viewBox="0 0 21 21" class={styles.shortcut + " svg-d5"} /></A>
+                        <A href={props.shortcut!} aria-><ShortcutSVG viewBox="0 0 21 21" class={styles.shortcut + " svg-d5"} /></A>
                     </Show>
                 </div>
                 <hr />
