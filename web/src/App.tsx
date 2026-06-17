@@ -4,6 +4,10 @@ import ProtectedRoute from './layouts/ProtectedRoute';
 
 const MainLayout = lazy(() => import("./layouts/Main"));
 const HomePage = lazy(() => import("./pages/Home"));
+const ManageSchedulePage = lazy(() => import("./pages/ManageSchedule"));
+const PersonalSchedulePage = lazy(() => import("./pages/PersonalSchedule"));
+const PunchPage = lazy(() => import("./pages/Punch"));
+
 
 const App: Component = () => {
   
@@ -11,6 +15,9 @@ const App: Component = () => {
     <ProtectedRoute>
       <Router root={MainLayout}>
         <Route path={"/"} component={HomePage} />
+        <Route path={"/time-card"} component={PunchPage} />
+        <Route path={"manage-schedule"} component={ManageSchedulePage} />
+        <Route path={"personal-schedule"} component={PersonalSchedulePage} />
       </Router>
     </ProtectedRoute>
   );
