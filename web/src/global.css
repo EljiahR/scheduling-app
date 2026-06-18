@@ -40,6 +40,8 @@ body {
 
 .svg-d5 {fill: #004a43 !important}
 .svg-d5:hover {fill: #008578 !important}
+.white-svg {fill: #fff !important}
+.white-svg > path {fill: #fff !important; stroke: #fff !important}
 
 button.theme-d2:hover {color:#fff !important; background-color:#008578 !important}
 
