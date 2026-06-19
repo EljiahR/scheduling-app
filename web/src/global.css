@@ -44,4 +44,4 @@ body {
 .white-svg > path {fill: #fff !important; stroke: #fff !important}
 
 button.theme-d2:hover {color:#fff !important; background-color:#008578 !important}
-
+.svg-btn {background: none !important; border: none !important}

@@ -1,3 +1,4 @@
+import "../../global.css";
 import styles from "./NavOverlay.module.css";
 import XSVG from "./x-symbol.svg";
 
@@ -17,8 +18,8 @@ export default ({ toggleOverlay }: NavOverlayProps) => {
             <div id={styles.navOverlayMenu}>
                 <div id={styles.overlayHeader}>
                     <div id={styles.closeContainer}>
-                        <button>
-                            <XSVG />
+                        <button class="close-btn svg-btn">
+                            <XSVG class="svg-d5" height="21px" width="21px" />
                         </button>
                     </div>
                 </div>
