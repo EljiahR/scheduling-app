@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SchedulingServer.Data;
-using SchedulingServer.Models;
+using SchedulingServer.Models.User;
 
 namespace SchedulingServer.Services;
 

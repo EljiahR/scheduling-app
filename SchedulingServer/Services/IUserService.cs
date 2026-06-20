@@ -1,4 +1,4 @@
-using SchedulingServer.Models;
+using SchedulingServer.Models.User;
 
 namespace SchedulingServer.Services;
 
