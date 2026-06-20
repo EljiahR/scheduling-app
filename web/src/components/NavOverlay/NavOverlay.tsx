@@ -18,7 +18,7 @@ export default ({ toggleOverlay }: NavOverlayProps) => {
             <div id={styles.navOverlayMenu}>
                 <div id={styles.overlayHeader}>
                     <div id={styles.closeContainer}>
-                        <button class="close-btn svg-btn">
+                        <button class="close-btn svg-btn" onClick={handleOverlayToggle}>
                             <XSVG class="svg-d5" height="21px" width="21px" />
                         </button>
                     </div>
