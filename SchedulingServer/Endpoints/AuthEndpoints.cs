@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using SchedulingServer.Helpers;
 using SchedulingServer.Models;
+using SchedulingServer.Models.RefreshToken;
 
 namespace SchedulingServer.Endpoints;
 
@@ -25,13 +26,12 @@ public static class AuthEndpoints
             return TypedResults.Unauthorized();
         });
 
-        app.MapPost("/auth/status", Results<Ok<string>, UnauthorizedHttpResult> (RefreshTokenFromBody body, HttpContext context) => 
+        app.MapGet("/auth/status", Results<Ok<string>, UnauthorizedHttpResult> (RefreshTokenFromBody body, HttpContext context) => 
         {
             if (context.User.Identity?.IsAuthenticated ?? false)
             {
-                // Check refresh token here
 
-                return TypedResults.Ok("");
+                return TypedResults.Ok("Authorized.");
             }
 
             return TypedResults.Unauthorized();

@@ -48,9 +48,7 @@ export const apiCheckStatus = async () => {
     
     try {
         if (!stringNullUndefinedOrEmpty(authToken)) {
-            const response = await api.post("/auth/status", { 
-                refreshToken 
-            }, {
+            const response = await api.get("/auth/status", {
                 headers: {
                     "Authorization": `Bearer ${authToken}`
                 }
