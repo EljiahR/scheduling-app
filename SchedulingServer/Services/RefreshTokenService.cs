@@ -7,8 +7,19 @@ namespace SchedulingServer.Services;
 public class RefreshTokenService(ScheduleContext context) : IRefreshTokenService
 {
     private readonly DbSet<RefreshToken> _refreshTokens = context.Set<RefreshToken>();
-    public async Task<RefreshToken?> GetRefreshTokenAsync(string refreshToken) => 
-        await _refreshTokens.FirstAsync((token) => token.Token == refreshToken);
+    public async Task<RefreshToken?> GetRefreshTokenAsync(string refreshToken) {
+        var existingToken = await _refreshTokens.FirstAsync((token) => token.Token == refreshToken);
+        
+        if (existingToken == null)
+        {
+            return null;
+        }
+
+        _refreshTokens.Remove(existingToken);
+        await context.SaveChangesAsync();
+
+        return existingToken;
+    }
 
     public async Task<RefreshToken> AddRefreshTokenAsync(RefreshToken refreshToken)
     {
@@ -16,6 +27,8 @@ public class RefreshTokenService(ScheduleContext context) : IRefreshTokenService
         _refreshTokens.RemoveRange(existingIpTokens);
 
         await _refreshTokens.AddAsync(refreshToken);
+
+        await context.SaveChangesAsync();
 
         return refreshToken;
     }   
