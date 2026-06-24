@@ -12,8 +12,8 @@ public class RefreshTokenService(ScheduleContext context) : IRefreshTokenService
 
     public async Task<RefreshToken> AddRefreshTokenAsync(RefreshToken refreshToken)
     {
-        var exisitingIpTokens = await _refreshTokens.Where((token) => token.IpAddress == refreshToken.IpAddress).ToListAsync();
-        _refreshTokens.RemoveRange(exisitingIpTokens);
+        var existingIpTokens = await _refreshTokens.Where((token) => token.IpAddress == refreshToken.IpAddress).ToListAsync();
+        _refreshTokens.RemoveRange(existingIpTokens);
 
         await _refreshTokens.AddAsync(refreshToken);
 

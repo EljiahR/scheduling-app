@@ -30,7 +30,7 @@ public class JwtService(IConfiguration config)
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public RefreshToken GenerateRefreshToken(string userId, string ipAddress = "")
+    public RefreshToken GenerateRefreshToken(string userEmail, string ipAddress = "")
     {
         var randomNumber = new byte[32];
         using var rng = RandomNumberGenerator.Create();
@@ -39,7 +39,7 @@ public class JwtService(IConfiguration config)
         return new() 
         {
             Token = Convert.ToBase64String(randomNumber),
-            UserId = userId,
+            UserEmail = userEmail,
             IpAddress = ipAddress,
             ExpirationDate = DateTime.Now.AddHours(Convert.ToDouble(config["Jwt:DurationInHours"]))
         };
