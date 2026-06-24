@@ -30,7 +30,7 @@ public class JwtService(IConfiguration config)
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public RefreshToken GenerateRefreshToken(string userId, string? ipAddress)
+    public RefreshToken GenerateRefreshToken(string userId, string ipAddress = "")
     {
         var randomNumber = new byte[32];
         using var rng = RandomNumberGenerator.Create();
