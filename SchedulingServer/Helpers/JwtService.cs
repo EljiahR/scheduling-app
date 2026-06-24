@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using SchedulingServer.Models.RefreshToken;
 
 namespace SchedulingServer.Helpers;
 
@@ -29,11 +30,18 @@ public class JwtService(IConfiguration config)
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public string GenerateRefreshToken()
+    public RefreshToken GenerateRefreshToken(string userId, string? ipAddress)
     {
         var randomNumber = new byte[32];
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(randomNumber);
-        return Convert.ToBase64String(randomNumber);
+
+        return new() 
+        {
+            Token = Convert.ToBase64String(randomNumber),
+            UserId = userId,
+            IpAddress = ipAddress,
+            ExpirationDate = DateTime.Now.AddHours(Convert.ToDouble(config["Jwt:DurationInHours"]))
+        };
     }
 }
