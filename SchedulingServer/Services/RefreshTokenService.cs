@@ -1,14 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using SchedulingServer.Data;
+using SchedulingServer.Helpers;
 using SchedulingServer.Models.RefreshToken;
 
 namespace SchedulingServer.Services;
 
-public class RefreshTokenService(ScheduleContext context) : IRefreshTokenService
+public class RefreshTokenService(ScheduleContext context, IConfiguration config) : IRefreshTokenService
 {
     private readonly DbSet<RefreshToken> _refreshTokens = context.Set<RefreshToken>();
     public async Task<RefreshToken?> GetRefreshTokenAsync(string refreshToken) {
-        var existingToken = await _refreshTokens.FirstAsync((token) => token.Token == refreshToken);
+        var existingToken = await _refreshTokens.FirstAsync((token) => JwtService.VerifyToken(refreshToken, token.HashedToken));
         
         if (existingToken == null)
         {
@@ -21,15 +22,18 @@ public class RefreshTokenService(ScheduleContext context) : IRefreshTokenService
         return existingToken;
     }
 
-    public async Task<RefreshToken> AddRefreshTokenAsync(RefreshToken refreshToken)
+    public async Task CreateRefreshTokenAsync(string refreshToken, string email)
     {
-        var existingIpTokens = await _refreshTokens.Where((token) => token.IpAddress == refreshToken.IpAddress).ToListAsync();
-        _refreshTokens.RemoveRange(existingIpTokens);
+        // var existingIpTokens = await _refreshTokens.Where((token) => token.IpAddress == refreshToken.IpAddress).ToListAsync();
+        // _refreshTokens.RemoveRange(existingIpTokens);
 
-        await _refreshTokens.AddAsync(refreshToken);
+        await _refreshTokens.AddAsync(new() 
+        {
+            HashedToken = JwtService.HashToken(refreshToken),
+            UserEmail = email,
+            ExpirationDate = DateTime.Now.AddDays(Convert.ToDouble(config["Jwt:DurationInDays"]))
+        });
 
         await context.SaveChangesAsync();
-
-        return refreshToken;
     }   
 }

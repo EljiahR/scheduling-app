@@ -7,41 +7,52 @@ using SchedulingServer.Models.RefreshToken;
 
 namespace SchedulingServer.Helpers;
 
-public class JwtService(IConfiguration config)
+public static class JwtService
 {
-    public string GenerateToken(string email)
+    public static string GenerateToken(string email, string securityKey, string issuer, string audience, double expirationInMinutes)
     {
         var claims = new[]
         {
             new Claim(ClaimTypes.Name, email)
         };
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
-            issuer: config["Jwt:Issuer"],
-            audience: config["Jwt:Audience"],
+            issuer,
+            audience,
             claims: claims,
-            expires: DateTime.Now.AddMinutes(Convert.ToDouble(config["Jwt:DurationInMinutes"])),
+            expires: DateTime.Now.AddMinutes(expirationInMinutes),
             signingCredentials: creds
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public RefreshToken GenerateRefreshToken(string userEmail, string ipAddress = "")
+    public static string GenerateRefreshToken()
     {
         var randomNumber = new byte[32];
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(randomNumber);
 
-        return new() 
-        {
-            Token = Convert.ToBase64String(randomNumber),
-            UserEmail = userEmail,
-            IpAddress = ipAddress,
-            ExpirationDate = DateTime.Now.AddHours(Convert.ToDouble(config["Jwt:DurationInHours"]))
-        };
+        return Convert.ToBase64String(randomNumber);
+    }
+
+    public static string HashToken(string token)
+    {
+        var bytes = Encoding.UTF8.GetBytes(token);
+        var hash = SHA256.HashData(bytes);
+        return Convert.ToBase64String(hash);
+    }
+    
+    public static bool VerifyToken(string token, string hash)
+    {
+        var hashedToken = HashToken(token);
+
+        return CryptographicOperations.FixedTimeEquals(
+            Convert.FromBase64String(hashedToken),
+            Convert.FromBase64String(hash)
+        );
     }
 }
