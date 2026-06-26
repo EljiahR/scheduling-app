@@ -35,11 +35,11 @@ public static class AuthEndpoints
         app.MapPost("/auth/refresh", async Task<Results<Ok<TokenDto>, UnauthorizedHttpResult>>(HttpContext context, RefreshTokenFromBody refreshToken, IRefreshTokenService refreshTokenService, IConfiguration config) => 
         {
             var currentTime = DateTime.Now;
-            if (refreshToken.Token == null)
+            if (refreshToken.Token == null || refreshToken.UserEmail == null)
             {
                 return TypedResults.Unauthorized();
             }
-            var existingToken = await refreshTokenService.GetRefreshTokenAsync(refreshToken.Token);
+            var existingToken = await refreshTokenService.GetRefreshTokenAsync(refreshToken.Token, refreshToken.UserEmail);
 
             // Get ip here
             var ipAddress = GetClientIp(context);
