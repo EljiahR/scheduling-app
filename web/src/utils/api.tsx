@@ -1,7 +1,7 @@
 import axios from "axios";
-import { setUserStore, userStore } from "./userStore";
+import { clearUserStore, setUserStore, setUserStoreFromResponse, userStore } from "./userStore";
 import { stringNullUndefinedOrEmpty } from "./stringHelpers";
-import wait from "./wait";
+import { UserSignInDto } from "./types/apiReturnTypes";
 
 const BASEURL = import.meta.env.VITE_API_URL;
 
@@ -16,10 +16,13 @@ const api = axios.create({
 
 export const apiRefreshToken = async () => {
     const existingRefreshToken = localStorage.getItem("refreshToken");
-    if (existingRefreshToken !== null && existingRefreshToken !== "") {
+    const storedEmail = localStorage.getItem("email");
+    console.log("Refresh token: " + existingRefreshToken);
+    if (!stringNullUndefinedOrEmpty(existingRefreshToken) && !stringNullUndefinedOrEmpty(storedEmail)) {
         try {
-            const response = await api.post("/auth/refresh", {
-                refreshToken: existingRefreshToken
+            const response = await api.post<UserSignInDto>("/auth/refresh", {
+                token: existingRefreshToken,
+                userEmail: storedEmail
             });
 
             if (response.status !== 200) {
@@ -28,24 +31,16 @@ export const apiRefreshToken = async () => {
 
             const data = response.data;
 
-            setUserStore("token", data.token);
-            // setUserStore("refreshToken", data.refreshToken);
-            localStorage.setItem("refreshToken", data.refreshToken);
+            setUserStoreFromResponse(storedEmail, data);
         } catch (e) {
-            setUserStore("token", "");
-            // setUserStore("refreshToken", "");
-            localStorage.removeItem("refreshToken");
+            clearUserStore();
         }
-        
     }
 }
 
 export const apiCheckStatus = async () => {
-    const authToken = userStore.token;
-    const refreshToken = localStorage.getItem("refreshToken");
+    const authToken = userStore.accessToken;
 
-    console.log("Token: " + authToken);
-    
     try {
         if (!stringNullUndefinedOrEmpty(authToken)) {
             const response = await api.get("/auth/status", {
@@ -54,36 +49,36 @@ export const apiCheckStatus = async () => {
                 }
             });
 
-            if (response.status !== 200) {
-                throw new Error("Token is invalid");
+            if (response.status === 200) {
+                setUserStore("loggedIn", true);
+            } else {
+                throw new Error("Invalid token.")
             }
-
-            setUserStore("loggedIn", true);
+            
+            
         } else {
-            throw new Error("No token found.");
+            throw new Error("Token missing.")
         }
     } catch (e) {
-        throw e;
+        console.log("Error during status check.", e);
     }
 }
 
 export const apiSignIn = async (email: string, password: string) => {
     try {   
-        const response = await api.post("/auth/signin", {
+        const response = await api.post<UserSignInDto>("/auth/signin", {
             email, 
             password
         });
 
         if (response.status === 200) {
             const data = response.data;
-            
-            setUserStore("loggedIn", true);
-            setUserStore("token", data.token);
+            setUserStoreFromResponse(email, data);
         }
 
         return response.status;
     } catch (e) {
-
+        console.log("Error occured during sign in post.", e);
     }
 }
 

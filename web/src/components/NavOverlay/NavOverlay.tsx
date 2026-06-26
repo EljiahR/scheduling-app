@@ -12,13 +12,17 @@ export default ({ toggleOverlay }: NavOverlayProps) => {
             toggleOverlay()
         }
     }
+
+    const handleCloseButton = () => {
+        toggleOverlay();
+    }
     
     return (
         <div id={styles.navOverlay} onClick={handleOverlayToggle}>
             <div id={styles.navOverlayMenu}>
                 <div id={styles.overlayHeader}>
                     <div id={styles.closeContainer}>
-                        <button class="close-btn svg-btn" onClick={handleOverlayToggle}>
+                        <button class="close-btn svg-btn" onClick={handleCloseButton}>
                             <XSVG class="svg-d5" height="21px" width="21px" />
                         </button>
                     </div>

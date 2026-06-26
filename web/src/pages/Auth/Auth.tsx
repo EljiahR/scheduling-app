@@ -2,9 +2,6 @@ import { createSignal, Match, onMount, Show, Switch } from "solid-js"
 import Card from "../../components/Card"
 import styles from "./Auth.module.css"
 import LoadingRing from "../../components/LoadingRing";
-import { userStore } from "../../utils/userStore";
-// import wait from "../../utils/wait";
-import LoadingBars from "../../components/LoadingBars";
 import { apiSignIn } from "../../utils/api";
 
 export default () => {
@@ -13,7 +10,6 @@ export default () => {
     const [isPasswordVisible, setIsPasswordVisible] = createSignal<boolean>(false);
     const [isWaitingSignIn, setIsWaitingSignIn] = createSignal<boolean>(false);
     const [signInError, setSignInError] = createSignal<boolean>(false);
-    const [returnPath, setReturnPath] = createSignal<string>("/protected");
 
     const handleFormSubmit = async (e: SubmitEvent) => {
         e.preventDefault();
@@ -41,45 +37,6 @@ export default () => {
     const handleViewPasswordToggle = () => {
         setIsPasswordVisible((isPasswordVisible) => !isPasswordVisible);
     };
-
-    // const checkAuth = async () => {
-    //     // if (params.skipInitialCheck === "skipCheck") {
-    //     //     console.log("Skipping auth check.");
-    //     //     setIsCheckingAuth(false);
-    //     //     return;
-    //     // }
-        
-    //     console.log("Checking for existing auth...")
-    //     // await wait(2000); 
-    //     const authToken = userStore.token;
-    //     const refreshToken = localStorage.getItem("refreshToken");
-    //     if (!stringNullUndefinedOrEmpty(params.path)) {
-    //         setReturnPath(params.path);
-    //     }
-        
-    //     try {
-    //         if (stringNullUndefinedOrEmpty(authToken) && stringNullUndefinedOrEmpty(refreshToken)) {
-    //             throw new Error("No tokens found.");
-    //         } 
-    //         console.log("Token found. Requesting status from server...");
-    //         await apiCheckStatus();
-
-    //         if (userStore.loggedIn) {
-    //             console.log("User logged in. Redirecting");
-    //             navigate(returnPath(), { replace: true });
-    //         } else {
-    //             console.log("User not logged in.")
-
-    //         }
-    //     } catch (e) {
-    //         // handle error
-    //         console.log(e);
-    //     } finally {
-    //         setIsCheckingAuth(false);
-    //     }
-    // }
-
-    // onMount(checkAuth);
     
     return (
         <div id={styles.authPage}>

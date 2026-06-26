@@ -15,7 +15,7 @@ export default () => {
     
     return (
         <nav id={styles.navbar} class="theme">
-            <button onClick={toggleOverlay}>
+            <button class="svg-btn" onClick={toggleOverlay}>
                 <HamburgerSVG height={"30px"} width={"30px"} class="white-svg" />
             </button>
             <A href="/" class="navlink"><HomeSVG height={"30px"} width={"30px"} class="white-svg" /></A>

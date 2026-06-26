@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.IdentityModel.Protocols;
 using SchedulingServer.Helpers;
 using SchedulingServer.Models;
 using SchedulingServer.Models.RefreshToken;
+using SchedulingServer.Models.User;
 using SchedulingServer.Services;
 
 namespace SchedulingServer.Endpoints;
@@ -11,11 +11,16 @@ public static class AuthEndpoints
 {
     public static void RegisterAuthEndpoints(this WebApplication app)
     {
-        app.MapPost("/auth/signin", async Task<Results<Ok<TokenDto>, UnauthorizedHttpResult>> (UserFromBody body, IRefreshTokenService refreshTokenService, IConfiguration config) => 
+        app.MapPost("/auth/signin", async Task<Results<Ok<UserSignInDto>, UnauthorizedHttpResult>> (UserFromBody body, IRefreshTokenService refreshTokenService, IConfiguration config) => 
         {
             if (body.Email == "admin@admin.com" && body.Password == "password")
             {
-                return TypedResults.Ok(await GetNewTokens(body.Email, refreshTokenService, config));
+                var tokens = await GetNewTokens(body.Email, refreshTokenService, config);
+                return TypedResults.Ok(new UserSignInDto()
+                {
+                    AccessToken = tokens.Token,
+                    RefreshToken = tokens.RefreshToken
+                });
             }
 
             return TypedResults.Unauthorized();
@@ -32,7 +37,7 @@ public static class AuthEndpoints
             return TypedResults.Unauthorized();
         });
 
-        app.MapPost("/auth/refresh", async Task<Results<Ok<TokenDto>, UnauthorizedHttpResult>>(HttpContext context, RefreshTokenFromBody refreshToken, IRefreshTokenService refreshTokenService, IConfiguration config) => 
+        app.MapPost("/auth/refresh", async Task<Results<Ok<UserSignInDto>, UnauthorizedHttpResult>>(HttpContext context, RefreshTokenFromBody refreshToken, IRefreshTokenService refreshTokenService, IConfiguration config) => 
         {
             var currentTime = DateTime.Now;
             if (refreshToken.Token == null || refreshToken.UserEmail == null)
@@ -49,8 +54,12 @@ public static class AuthEndpoints
                 return TypedResults.Unauthorized();
             }
             
-
-            return TypedResults.Ok(await GetNewTokens(refreshToken.UserEmail, refreshTokenService, config));
+            var tokens = await GetNewTokens(refreshToken.UserEmail, refreshTokenService, config);
+            return TypedResults.Ok(new UserSignInDto()
+            {
+                AccessToken = tokens.Token,
+                RefreshToken = tokens.RefreshToken
+            });
         });
     }
 

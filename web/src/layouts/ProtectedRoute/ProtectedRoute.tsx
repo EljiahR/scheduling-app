@@ -1,6 +1,6 @@
 import { Component, createSignal, lazy, Match, onMount, Show, Switch } from "solid-js";
-import { setUserStore, userStore } from "../../utils/userStore";
-import { apiCheckStatus } from "../../utils/api";
+import { userStore } from "../../utils/userStore";
+import { apiCheckStatus, apiRefreshToken } from "../../utils/api";
 import LoadingBars from "../../components/LoadingBars";
 
 const AuthPage = lazy(() => import("../../pages/Auth"));
@@ -11,10 +11,14 @@ const ProtectedRoute: Component<any> = (props) => {
     
     const checkAuth = async () => {
         try {
-            // await apiCheckStatus();
+            await apiCheckStatus();
+            if (!userStore.loggedIn) {
+                console.log("Access token was invalid/missing. Checking refresh token...");
+                await apiRefreshToken();
+            }
 
             // For developement purposes
-            setUserStore("loggedIn", true);
+            // setUserStore("loggedIn", true);
         } catch (e) {
             console.log(e);
         } finally {
