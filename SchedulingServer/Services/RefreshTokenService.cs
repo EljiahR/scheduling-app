@@ -8,18 +8,18 @@ namespace SchedulingServer.Services;
 public class RefreshTokenService(ScheduleContext context, IConfiguration config) : IRefreshTokenService
 {
     private readonly DbSet<RefreshToken> _refreshTokens = context.Set<RefreshToken>();
-    public async Task<RefreshToken?> GetRefreshTokenAsync(string refreshToken) {
-        var existingToken = await _refreshTokens.FirstAsync((token) => JwtService.VerifyToken(refreshToken, token.HashedToken));
+    public async Task<RefreshToken?> GetRefreshTokenAsync(string refreshToken, string email) {
+        var existingTokens = await _refreshTokens.Where((token) => token.UserEmail == email).ToListAsync();
         
-        if (existingToken == null)
+        var matchedToken = existingTokens.FirstOrDefault((token) => JwtService.VerifyToken(refreshToken, token.HashedToken));
+
+        if (matchedToken != null)
         {
-            return null;
+            _refreshTokens.Remove(matchedToken);
+            await context.SaveChangesAsync();
         }
 
-        _refreshTokens.Remove(existingToken);
-        await context.SaveChangesAsync();
-
-        return existingToken;
+        return matchedToken;
     }
 
     public async Task CreateRefreshTokenAsync(string refreshToken, string email)

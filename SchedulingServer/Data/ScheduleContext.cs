@@ -16,4 +16,12 @@ public class ScheduleContext : IdentityDbContext<User>
     public required DbSet<Job> Jobs { get; set; }
     public required DbSet<Shift> Shifts { get; set; }
     public required DbSet<RefreshToken> RefreshTokens { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        builder.Entity<RefreshToken>()
+            .HasKey((t) => t.HashedToken);
+        
+        base.OnModelCreating(builder);
+    }
 }
