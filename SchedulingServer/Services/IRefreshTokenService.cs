@@ -4,6 +4,6 @@ namespace SchedulingServer.Services;
 
 public interface IRefreshTokenService
 {
-    Task<RefreshToken?> GetRefreshTokenAsync(string refreshToken);
+    Task<RefreshToken?> GetRefreshTokenAsync(string refreshToken, string email);
     Task CreateRefreshTokenAsync(string refreshToken, string email);
 }
