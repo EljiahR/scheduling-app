@@ -6,7 +6,6 @@ using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using SchedulingServer.Data;
 using SchedulingServer.Endpoints;
-using SchedulingServer.Helpers;
 using SchedulingServer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -65,8 +64,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     options.KnownProxies.Clear();
 });
 
-
-builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddOpenApi();

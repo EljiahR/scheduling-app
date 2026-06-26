@@ -11,7 +11,7 @@ public static class AuthEndpoints
 {
     public static void RegisterAuthEndpoints(this WebApplication app)
     {
-        app.MapPost("/auth/signin", async Task<Results<Ok<TokenDto>, UnauthorizedHttpResult>> (UserFromBody body, RefreshTokenService refreshTokenService, HttpRequestData request, IConfiguration config) => 
+        app.MapPost("/auth/signin", async Task<Results<Ok<TokenDto>, UnauthorizedHttpResult>> (UserFromBody body, IRefreshTokenService refreshTokenService, IConfiguration config) => 
         {
             if (body.Email == "admin@admin.com" && body.Password == "password")
             {
@@ -21,7 +21,7 @@ public static class AuthEndpoints
             return TypedResults.Unauthorized();
         });
 
-        app.MapGet("/auth/status", Results<Ok<string>, UnauthorizedHttpResult> (RefreshTokenFromBody body, HttpContext context) => 
+        app.MapGet("/auth/status", Results<Ok<string>, UnauthorizedHttpResult> (HttpContext context) => 
         {
             if (context.User.Identity?.IsAuthenticated ?? false)
             {
@@ -32,7 +32,7 @@ public static class AuthEndpoints
             return TypedResults.Unauthorized();
         });
 
-        app.MapPost("/auth/refresh", async Task<Results<Ok<TokenDto>, UnauthorizedHttpResult>>(RefreshTokenFromBody refreshToken, RefreshTokenService refreshTokenService, IConfiguration config, HttpRequestData request) => 
+        app.MapPost("/auth/refresh", async Task<Results<Ok<TokenDto>, UnauthorizedHttpResult>>(HttpContext context, RefreshTokenFromBody refreshToken, IRefreshTokenService refreshTokenService, IConfiguration config) => 
         {
             var currentTime = DateTime.Now;
             if (refreshToken.Token == null)
@@ -42,7 +42,7 @@ public static class AuthEndpoints
             var existingToken = await refreshTokenService.GetRefreshTokenAsync(refreshToken.Token);
 
             // Get ip here
-            var ipAddress = GetClientIp(request);
+            var ipAddress = GetClientIp(context);
 
             if (existingToken == null || existingToken.UserEmail != refreshToken.UserEmail || DateTime.Compare(currentTime, existingToken.ExpirationDate) >= 0) 
             {
@@ -54,7 +54,7 @@ public static class AuthEndpoints
         });
     }
 
-    private static async Task<TokenDto> GetNewTokens(string email, RefreshTokenService refreshTokenService, IConfiguration config)
+    private static async Task<TokenDto> GetNewTokens(string email, IRefreshTokenService refreshTokenService, IConfiguration config)
     {
         var token = JwtService.GenerateToken(email, config["Jwt:Key"]!, config["Jwt:Issuer"]!, config["Jwt:Audience"]!, Convert.ToDouble(config["Jwt:DurationInMinutes"]));
         var refreshToken = JwtService.GenerateRefreshToken();
@@ -67,18 +67,13 @@ public static class AuthEndpoints
         };     
     }
 
-    private static string GetClientIp(HttpRequestData request)
+    private static string GetClientIp(HttpContext context)
     {
-        var clientIp = "";
-        
-        if (request.Headers.TryGetValue("X-Forwarded-For", out var forwardedFor))
-        {
-            clientIp = forwardedFor.FirstOrDefault()?.Split(",")[0]?.Trim();
-        }
+        string? clientIp = context.Request.Headers["X-Forwarded-For"];
 
-        if (string.IsNullOrWhiteSpace(clientIp) && request.Headers.TryGetValue("REMOTE_ADDR", out var remoteAddress))
+        if (string.IsNullOrWhiteSpace(clientIp) && context.Request.Headers.TryGetValue("REMOTE_ADDR", out var remoteAddress))
         {
-            clientIp = remoteAddress.FirstOrDefault()?.Split(",")[0]?.Trim();;
+            clientIp = context?.Connection?.RemoteIpAddress?.ToString();
         }
 
         return clientIp ?? "";
