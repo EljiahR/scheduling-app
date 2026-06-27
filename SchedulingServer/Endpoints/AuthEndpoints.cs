@@ -15,6 +15,8 @@ public static class AuthEndpoints
         {
             if (body.Email == "admin@admin.com" && body.Password == "password")
             {
+                // Get user id here
+                
                 var tokens = await GetNewTokens(body.Email, refreshTokenService, config);
                 return TypedResults.Ok(new UserSignInDto()
                 {

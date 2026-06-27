@@ -1,18 +1,7 @@
-import axios from "axios";
-import { clearUserStore, setUserStore, setUserStoreFromResponse, userStore } from "./userStore";
-import { stringNullUndefinedOrEmpty } from "./stringHelpers";
-import { UserSignInDto } from "./types/apiReturnTypes";
-
-const BASEURL = import.meta.env.VITE_API_URL;
-
-if (stringNullUndefinedOrEmpty(BASEURL)) {
-    console.log(BASEURL);
-    throw new Error("VITE_API_URL is not defined.");
-}
-
-const api = axios.create({
-    baseURL: BASEURL
-});
+import { stringNullUndefinedOrEmpty } from "../stringHelpers";
+import { UserSignInDto } from "../types/apiReturnTypes";
+import { clearUserStore, setUserStore, setUserStoreFromResponse, userStore } from "../userStore";
+import { api } from "./api";
 
 export const apiRefreshToken = async () => {
     const existingRefreshToken = localStorage.getItem("refreshToken");
@@ -81,5 +70,3 @@ export const apiSignIn = async (email: string, password: string) => {
         console.log("Error occured during sign in post.", e);
     }
 }
-
-export default api;

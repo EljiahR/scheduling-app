@@ -2,7 +2,7 @@ import { createSignal, Match, onMount, Show, Switch } from "solid-js"
 import Card from "../../components/Card"
 import styles from "./Auth.module.css"
 import LoadingRing from "../../components/LoadingRing";
-import { apiSignIn } from "../../utils/api";
+import { apiSignIn } from "../../utils/api/authApi";
 
 export default () => {
     const [email, setEmail] = createSignal<string>("");

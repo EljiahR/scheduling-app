@@ -66,6 +66,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPunchService, PunchServices>();
 
 builder.Services.AddOpenApi();
 
@@ -77,6 +78,8 @@ app.MapGet("/", () => "Hello World!");
 
 app.RegisterUserEndpoints();
 app.RegisterAuthEndpoints();
+app.RegisterPunchEndpoints();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

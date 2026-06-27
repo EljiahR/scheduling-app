@@ -1,7 +1,7 @@
 import { Component, createSignal, lazy, Match, onMount, Show, Switch } from "solid-js";
 import { userStore } from "../../utils/userStore";
-import { apiCheckStatus, apiRefreshToken } from "../../utils/api";
 import LoadingBars from "../../components/LoadingBars";
+import { apiCheckStatus, apiRefreshToken } from "../../utils/api/authApi";
 
 const AuthPage = lazy(() => import("../../pages/Auth"));
 

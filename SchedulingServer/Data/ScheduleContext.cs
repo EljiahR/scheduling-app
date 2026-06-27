@@ -16,6 +16,7 @@ public class ScheduleContext : IdentityDbContext<User>
     public required DbSet<Job> Jobs { get; set; }
     public required DbSet<Shift> Shifts { get; set; }
     public required DbSet<RefreshToken> RefreshTokens { get; set; }
+    public required DbSet<Punch> Punches { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

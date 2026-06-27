@@ -3,17 +3,16 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using SchedulingServer.Models.RefreshToken;
 
 namespace SchedulingServer.Helpers;
 
 public static class JwtService
 {
-    public static string GenerateToken(string email, string securityKey, string issuer, string audience, double expirationInMinutes)
+    public static string GenerateToken(string userId, string securityKey, string issuer, string audience, double expirationInMinutes)
     {
         var claims = new[]
         {
-            new Claim(ClaimTypes.Name, email)
+            new Claim(ClaimTypes.NameIdentifier, userId)
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityKey));

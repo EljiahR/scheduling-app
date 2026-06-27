@@ -4,7 +4,7 @@ import { UserSignInDto } from "./types/apiReturnTypes";
 export const [userStore, setUserStore] = createStore({
     loggedIn: false,
     accessToken: "",
-    userEmail: ""
+    userEmail: "",
 });
 
 export const setUserStoreFromResponse = (email: string, userInfo: UserSignInDto) => {
