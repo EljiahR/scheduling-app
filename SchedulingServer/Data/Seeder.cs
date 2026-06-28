@@ -3,21 +3,31 @@ using SchedulingServer.Models.User;
 
 namespace SchedulingServer.Data;
 
-public class Seeder(UserManager<User> userManager)
+public static class Seeder
 {
-    public async Task SeedUser(string email, string password)
+    public static async Task SeedUser(UserManager<User> userManager, string userName, string email, string password)
     {
         var existingSeed = await userManager.FindByEmailAsync(email);
-        if (existingSeed == null)
+        if (existingSeed != null)
         {
             return;
         }
 
         var seededUser = new User
         {
+            UserName = userName,
             Email = email
         };
 
-        await userManager.CreateAsync(seededUser, password);
+        var result = await userManager.CreateAsync(seededUser, password);
+
+        if (result.Succeeded) 
+        {
+            Console.WriteLine("User was seeded");
+        } else 
+        {
+            Console.WriteLine("User was not seeded");
+            Console.WriteLine(result.Errors.FirstOrDefault()?.Description);
+        }
     }
 }

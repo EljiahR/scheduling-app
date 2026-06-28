@@ -1,11 +1,13 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using SchedulingServer.Data;
 using SchedulingServer.Endpoints;
+using SchedulingServer.Models.User;
 using SchedulingServer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,8 +17,6 @@ if (string.IsNullOrEmpty(dbConnection))
 {
     builder.Services.AddDbContext<ScheduleContext>(options =>
         options.UseSqlite("Data Source=employees.db"), ServiceLifetime.Scoped);
-
-    builder.Services.AddScoped<Seeder>();
 }
 else
 {
@@ -69,6 +69,8 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPunchService, PunchServices>();
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<ScheduleContext>();
 
 builder.Services.AddOpenApi();
 
@@ -87,9 +89,11 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.UseForwardedHeaders();
     app.MapScalarApiReference();
+    
     using var scope = app.Services.CreateScope();
-    var seeder = scope.ServiceProvider.GetRequiredService<Seeder>();
-    await seeder.SeedUser(builder.Configuration["Seed:Email"] ?? "admin@admin.com", builder.Configuration["Seed:Password"] ?? "password");
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+    Console.WriteLine("Seeding...");
+    await Seeder.SeedUser(userManager, builder.Configuration["Seed:UserName"] ?? "Placeholder", builder.Configuration["Seed:Email"] ?? "admin@admin.com", builder.Configuration["Seed:Password"] ?? "Password0!");
 }
 
 app.Run();
