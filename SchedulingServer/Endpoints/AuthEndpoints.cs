@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using SchedulingServer.Helpers;
 using SchedulingServer.Models;
 using SchedulingServer.Models.RefreshToken;
@@ -11,21 +12,33 @@ public static class AuthEndpoints
 {
     public static void RegisterAuthEndpoints(this WebApplication app)
     {
-        app.MapPost("/auth/signin", async Task<Results<Ok<UserSignInDto>, UnauthorizedHttpResult>> (UserFromBody body, IRefreshTokenService refreshTokenService, IConfiguration config) => 
+        app.MapPost("/auth/signin", async Task<Results<Ok<UserSignInDto>, UnauthorizedHttpResult, BadRequest<string>>> (UserFromBody body, IRefreshTokenService refreshTokenService, UserManager<User> userManager, IPunchService punchService, IConfiguration config) => 
         {
-            if (body.Email == "admin@admin.com" && body.Password == "password")
+            if (string.IsNullOrWhiteSpace(body.Email) || string.IsNullOrWhiteSpace(body.Password))
             {
-                // Get user id here
+                return TypedResults.BadRequest("Email and/or password missing.");
+            }
+            var user = await userManager.FindByEmailAsync(body.Email);    
                 
-                var tokens = await GetNewTokens(body.Email, refreshTokenService, config);
-                return TypedResults.Ok(new UserSignInDto()
-                {
-                    AccessToken = tokens.Token,
-                    RefreshToken = tokens.RefreshToken
-                });
+            if (user == null)
+            {
+                return TypedResults.Unauthorized();
             }
 
-            return TypedResults.Unauthorized();
+            if (!await userManager.CheckPasswordAsync(user, body.Password))
+            {
+                return TypedResults.Unauthorized();
+            }
+                
+            var tokens = await GetNewTokens(body.Email, refreshTokenService, config);
+            var lastPunch = await punchService.GetUserLastPunchAsync(user.Id);
+
+            return TypedResults.Ok(new UserSignInDto()
+            {
+                AccessToken = tokens.Token,
+                RefreshToken = tokens.RefreshToken,
+                LastPunch = lastPunch?.Time
+            });
         });
 
         app.MapGet("/auth/status", Results<Ok<string>, UnauthorizedHttpResult> (HttpContext context) => 

@@ -22,6 +22,12 @@ public class ScheduleContext : IdentityDbContext<User>
     {
         builder.Entity<RefreshToken>()
             .HasKey((t) => t.HashedToken);
+
+        builder.Entity<User>()
+            .HasMany((u) => u.Punches)
+            .WithOne()
+            .HasForeignKey((p) => p.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
         
         base.OnModelCreating(builder);
     }

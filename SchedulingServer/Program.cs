@@ -15,6 +15,8 @@ if (string.IsNullOrEmpty(dbConnection))
 {
     builder.Services.AddDbContext<ScheduleContext>(options =>
         options.UseSqlite("Data Source=employees.db"), ServiceLifetime.Scoped);
+
+    builder.Services.AddScoped<Seeder>();
 }
 else
 {
@@ -85,5 +87,9 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.UseForwardedHeaders();
     app.MapScalarApiReference();
+    using var scope = app.Services.CreateScope();
+    var seeder = scope.ServiceProvider.GetRequiredService<Seeder>();
+    await seeder.SeedUser(builder.Configuration["Seed:Email"] ?? "admin@admin.com", builder.Configuration["Seed:Password"] ?? "password");
 }
+
 app.Run();

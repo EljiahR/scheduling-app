@@ -5,4 +5,5 @@ namespace SchedulingServer.Models.User;
 public class User : IdentityUser
 {
     public string? PrimaryJobId { get; set; }
+    public Punch[] Punches { get; set; } = [];
 }

@@ -32,4 +32,21 @@ public class PunchServices(ScheduleContext context) : IPunchService
 
         return newPunch;
     }
+
+    public async Task<Punch?> GetUserLastPunchAsync(string userId)
+    {
+        var punches = await _punches.OrderBy((punch) => punch.InPunch).ToListAsync();
+
+        if (punches.Count == 0)
+        {
+            return null;
+        }
+
+        return punches[0];
+    }
+
+    public async Task<IEnumerable<Punch>> GetUserAllPunchesAsync(string userId)
+    {
+        return await _punches.OrderBy((punch) => punch.InPunch).ToListAsync();
+    }
 }
