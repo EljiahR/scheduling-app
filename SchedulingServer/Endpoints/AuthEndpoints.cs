@@ -30,13 +30,14 @@ public static class AuthEndpoints
                 return TypedResults.Unauthorized();
             }
                 
-            var tokens = await GetNewTokens(body.Email, refreshTokenService, config);
+            var tokens = await GetNewTokens(user.Id, refreshTokenService, config);
             var lastPunch = await punchService.GetUserLastPunchAsync(user.Id);
 
             return TypedResults.Ok(new UserSignInDto()
             {
                 AccessToken = tokens.Token,
                 RefreshToken = tokens.RefreshToken,
+                UserId = user.Id,
                 LastPunch = lastPunch?.Time
             });
         });
@@ -55,34 +56,35 @@ public static class AuthEndpoints
         app.MapPost("/auth/refresh", async Task<Results<Ok<UserSignInDto>, UnauthorizedHttpResult>>(HttpContext context, RefreshTokenFromBody refreshToken, IRefreshTokenService refreshTokenService, IConfiguration config) => 
         {
             var currentTime = DateTime.Now;
-            if (refreshToken.Token == null || refreshToken.UserEmail == null)
+            if (refreshToken.Token == null || refreshToken.UserId == null)
             {
                 return TypedResults.Unauthorized();
             }
-            var existingToken = await refreshTokenService.GetRefreshTokenAsync(refreshToken.Token, refreshToken.UserEmail);
+            var existingToken = await refreshTokenService.GetRefreshTokenAsync(refreshToken.Token, refreshToken.UserId);
 
             // Get ip here
             var ipAddress = GetClientIp(context);
 
-            if (existingToken == null || existingToken.UserEmail != refreshToken.UserEmail || DateTime.Compare(currentTime, existingToken.ExpirationDate) >= 0) 
+            if (existingToken == null || existingToken.UserId != refreshToken.UserId || DateTime.Compare(currentTime, existingToken.ExpirationDate) >= 0) 
             {
                 return TypedResults.Unauthorized();
             }
             
-            var tokens = await GetNewTokens(refreshToken.UserEmail, refreshTokenService, config);
+            var tokens = await GetNewTokens(refreshToken.UserId, refreshTokenService, config);
             return TypedResults.Ok(new UserSignInDto()
             {
                 AccessToken = tokens.Token,
-                RefreshToken = tokens.RefreshToken
+                RefreshToken = tokens.RefreshToken,
+                UserId = refreshToken.UserId
             });
         });
     }
 
-    private static async Task<TokenDto> GetNewTokens(string email, IRefreshTokenService refreshTokenService, IConfiguration config)
+    private static async Task<TokenDto> GetNewTokens(string userId, IRefreshTokenService refreshTokenService, IConfiguration config)
     {
-        var token = JwtService.GenerateToken(email, config["Jwt:Key"]!, config["Jwt:Issuer"]!, config["Jwt:Audience"]!, Convert.ToDouble(config["Jwt:DurationInMinutes"]));
+        var token = JwtService.GenerateToken(userId, config["Jwt:Key"]!, config["Jwt:Issuer"]!, config["Jwt:Audience"]!, Convert.ToDouble(config["Jwt:DurationInMinutes"]));
         var refreshToken = JwtService.GenerateRefreshToken();
-        await refreshTokenService.CreateRefreshTokenAsync(refreshToken, email);
+        await refreshTokenService.CreateRefreshTokenAsync(refreshToken, userId);
 
         return new TokenDto 
         {

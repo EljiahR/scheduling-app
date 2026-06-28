@@ -4,5 +4,6 @@ public class UserSignInDto
 {
     public required string AccessToken { get; set; }
     public required string RefreshToken { get; set; }
+    public required string UserId { get; set; }
     public DateTime? LastPunch { get; set; } = null;
 }
