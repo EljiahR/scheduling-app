@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using SchedulingServer.Helpers;
@@ -42,18 +43,12 @@ public static class AuthEndpoints
             });
         });
 
-        app.MapGet("/auth/status", Results<Ok<string>, UnauthorizedHttpResult> (HttpContext context) => 
+        app.MapGet("/auth/status", [Authorize] Results<Ok<string>, UnauthorizedHttpResult> () => 
         {
-            if (context.User.Identity?.IsAuthenticated ?? false)
-            {
-
-                return TypedResults.Ok("Authorized.");
-            }
-
-            return TypedResults.Unauthorized();
+            return TypedResults.Ok("Authorized.");
         });
 
-        app.MapPost("/auth/refresh", async Task<Results<Ok<UserSignInDto>, UnauthorizedHttpResult>>(HttpContext context, RefreshTokenFromBody refreshToken, IRefreshTokenService refreshTokenService, IConfiguration config) => 
+        app.MapPost("/auth/refresh", async Task<Results<Ok<UserSignInDto>, UnauthorizedHttpResult>>(HttpContext context, RefreshTokenFromBody refreshToken, IRefreshTokenService refreshTokenService, IPunchService punchService, IConfiguration config) => 
         {
             var currentTime = DateTime.Now;
             if (refreshToken.Token == null || refreshToken.UserId == null)
@@ -69,13 +64,16 @@ public static class AuthEndpoints
             {
                 return TypedResults.Unauthorized();
             }
+
+            var lastPunch = await punchService.GetUserLastPunchAsync(existingToken.UserId);
             
             var tokens = await GetNewTokens(refreshToken.UserId, refreshTokenService, config);
             return TypedResults.Ok(new UserSignInDto()
             {
                 AccessToken = tokens.Token,
                 RefreshToken = tokens.RefreshToken,
-                UserId = refreshToken.UserId
+                UserId = refreshToken.UserId,
+                LastPunch = lastPunch?.Time
             });
         });
     }

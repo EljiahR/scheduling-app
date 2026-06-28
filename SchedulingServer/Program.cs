@@ -24,10 +24,14 @@ else
         options.UseNpgsql(dbConnection));
 }
 
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<ScheduleContext>();
+
 builder.Services.AddAuthentication(options => 
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
 .AddJwtBearer(options => 
 {
@@ -69,14 +73,15 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPunchService, PunchServices>();
-builder.Services.AddIdentity<User, IdentityRole>()
-    .AddEntityFrameworkStores<ScheduleContext>();
 
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+app.UseHttpsRedirection();
 app.UseCors("AllowSpecificOrigins");
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapGet("/", () => "Hello World!");
 

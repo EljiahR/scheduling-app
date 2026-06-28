@@ -4,19 +4,24 @@ import styles from "./PunchCard.module.css";
 import { apiSendPunch } from "../../utils/api/timecardApi";
 import { createSignal, Match, Show, Switch } from "solid-js";
 import LoadingRing from "../LoadingRing";
+import { setUserStore, userStore } from "../../utils/userStore";
+import { convertStringToDate } from "../../utils/dateHelpers";
 
 export default () => {
     const [isSendingPunch, setIsSendingPunch] = createSignal<boolean>(false);
-    const [lastPunch, setLastPunch] = createSignal(null);
+    const lastPunch = userStore.lastPunch;
     
     const handlePunch = async (inPunch: boolean) => {
         try {
             setIsSendingPunch(true);
             const punch = await apiSendPunch(inPunch);
-            setLastPunch(punch.time);
+            if (punch == null) {
+                throw new Error("Error with punch.")
+            }
             console.log(punch);
+            setUserStore("lastPunch", convertStringToDate(punch.time));
         } catch (e) {
-
+            console.log(e);
         } finally {
             setIsSendingPunch(false);
         }
@@ -30,8 +35,8 @@ export default () => {
                 </Match>
                 <Match when={!isSendingPunch()}>
                     <div id={styles.punchCard}>
-                        <Show when={lastPunch() !== null}>
-                            <p>Last punch: {lastPunch()}</p>
+                        <Show when={lastPunch !== null}>
+                            <p>Last punch: {lastPunch?.toString()}</p>
                         </Show>
                         <button class={styles.punchBtn + " theme-d2"} onClick={() => handlePunch(true)}>Punch In</button>
                         <button class={styles.punchBtn + " theme-d2"} onClick={() => handlePunch(false)}>Punch Out</button>

@@ -5,13 +5,13 @@ import { api } from "./api";
 
 export const apiRefreshToken = async () => {
     const existingRefreshToken = localStorage.getItem("refreshToken");
-    const storedEmail = localStorage.getItem("email");
+    const storedId = localStorage.getItem("userId");
     console.log("Refresh token: " + existingRefreshToken);
-    if (!stringNullUndefinedOrEmpty(existingRefreshToken) && !stringNullUndefinedOrEmpty(storedEmail)) {
+    if (!stringNullUndefinedOrEmpty(existingRefreshToken) && !stringNullUndefinedOrEmpty(storedId)) {
         try {
             const response = await api.post<UserSignInDto>("/auth/refresh", {
                 token: existingRefreshToken,
-                userEmail: storedEmail
+                userId: storedId
             });
 
             if (response.status !== 200) {
@@ -20,7 +20,7 @@ export const apiRefreshToken = async () => {
 
             const data = response.data;
 
-            setUserStoreFromResponse(storedEmail, data);
+            setUserStoreFromResponse(data);
         } catch (e) {
             clearUserStore();
         }
@@ -62,7 +62,7 @@ export const apiSignIn = async (email: string, password: string) => {
 
         if (response.status === 200) {
             const data = response.data;
-            setUserStoreFromResponse(email, data);
+            setUserStoreFromResponse(data);
         }
 
         return response.status;

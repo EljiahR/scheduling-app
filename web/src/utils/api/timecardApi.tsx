@@ -1,4 +1,5 @@
 import { stringNullUndefinedOrEmpty } from "../stringHelpers";
+import { Punch } from "../types/apiReturnTypes";
 import { userStore } from "../userStore"
 import { api } from "./api"
 
@@ -10,7 +11,7 @@ export const apiSendPunch = async (inPunch: boolean) => {
     }
 
     try {
-        const response = await api.get(`/timecard/punch?inPunch=${inPunch}`, {
+        const response = await api.get<Punch>(`/timecard/punch?inPunch=${inPunch}`, {
             headers: {
                 "Authorization": `Bearer ${authToken}`
             }

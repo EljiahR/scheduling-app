@@ -5,27 +5,25 @@ import { convertStringToDate } from "./dateHelpers";
 export const [userStore, setUserStore] = createStore({
     loggedIn: false,
     accessToken: "",
-    userEmail: "",
+    userId: "",
     lastPunch: null as Date | null
 });
 
-export const setUserStoreFromResponse = (email: string, userInfo: UserSignInDto) => {
+export const setUserStoreFromResponse = (userInfo: UserSignInDto) => {
     setUserStore("accessToken", userInfo.accessToken);
-    setUserStore("userEmail", email);
-    const lastPunch = convertStringToDate(userInfo.lastPunch);
-    if (lastPunch !== null) {
-        setUserStore("lastPunch", lastPunch);
-    }
-    localStorage.setItem("email", email);
+    setUserStore("userId", userInfo.userId);
+    setUserStore("lastPunch", convertStringToDate(userInfo.lastPunch));
+    console.log(userStore.lastPunch);
+    localStorage.setItem("userId", userInfo.userId);
     localStorage.setItem("refreshToken", userInfo.refreshToken);
     setUserStore("loggedIn", true);
 }
 
 export const clearUserStore = () => {
     setUserStore("accessToken", "");
-    setUserStore("userEmail", "");
-    localStorage.clearItem("email");
-    localStorage.clearItem("refreshToken");
+    setUserStore("userId", "");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("refreshToken");
     setUserStore("loggedIn", false);
 }
 
