@@ -10,6 +10,26 @@ public static class PunchEndpoints
 {
     public static void RegisterPunchEndpoints(this WebApplication app)
     {
+        app.MapGet("/timecard", [Authorize] async Task<Results<Ok<IEnumerable<Punch>>, UnauthorizedHttpResult>> (HttpContext context, IPunchService punchService) => 
+        {
+            var user = context.User;
+
+            if (user?.Identity?.IsAuthenticated != true)
+            {
+                return TypedResults.Unauthorized();
+            }
+
+            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return TypedResults.Unauthorized();
+            }
+
+            var punches = await punchService.GetUserAllPunchesAsync(userId);
+
+            return TypedResults.Ok(punches);
+        });
+        
         app.MapGet("/timecard/punch", [Authorize] async Task<Results<Ok<Punch>, BadRequest<string>, UnauthorizedHttpResult>> (bool inPunch, HttpContext context, IPunchService punchService) => 
         {
             var user = context.User;
