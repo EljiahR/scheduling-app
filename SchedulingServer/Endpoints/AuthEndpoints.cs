@@ -50,7 +50,7 @@ public static class AuthEndpoints
 
         app.MapPost("/auth/refresh", async Task<Results<Ok<UserSignInDto>, UnauthorizedHttpResult>>(HttpContext context, RefreshTokenFromBody refreshToken, IRefreshTokenService refreshTokenService, IPunchService punchService, IConfiguration config) => 
         {
-            var currentTime = DateTime.Now;
+            var currentTime = DateTime.UtcNow;
             if (refreshToken.Token == null || refreshToken.UserId == null)
             {
                 return TypedResults.Unauthorized();

@@ -31,7 +31,7 @@ public class RefreshTokenService(ScheduleContext context, IConfiguration config)
         {
             HashedToken = JwtService.HashToken(refreshToken),
             UserId = userId,
-            ExpirationDate = DateTime.Now.AddDays(Convert.ToDouble(config["Jwt:DurationInDays"]))
+            ExpirationDate = DateTime.UtcNow.AddDays(Convert.ToDouble(config["Jwt:DurationInDays"]))
         });
 
         await context.SaveChangesAsync();

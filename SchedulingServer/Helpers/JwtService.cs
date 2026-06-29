@@ -22,7 +22,7 @@ public static class JwtService
             issuer,
             audience,
             claims: claims,
-            expires: DateTime.Now.AddMinutes(expirationInMinutes),
+            expires: DateTime.UtcNow.AddMinutes(expirationInMinutes),
             signingCredentials: creds
         );
 
