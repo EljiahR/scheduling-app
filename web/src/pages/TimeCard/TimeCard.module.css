@@ -1,0 +1,24 @@
+#timeCardPage {
+    width: 100%;
+    background-color: orange;
+}
+
+#options {
+    height: 100px;
+    width: 100%;
+    background-color: green;
+}
+
+#timeCardContainer {
+    width: 100%;
+    background-color: black;
+    border: 1px solid rgb(122, 122, 122);
+    display: grid;
+    gap: 1px;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(8, 60px);
+}
+
+#timeCardContainer > * {
+    background-color: white;
+}
