@@ -49,4 +49,13 @@ public class PunchServices(ScheduleContext context) : IPunchService
     {
         return await _punches.OrderBy((punch) => punch.InPunch).ToListAsync();
     }
+
+    public async Task<IEnumerable<Punch>> GetUserPunchesInRangeAsync(string userId, DateTime startDay, DateTime endDay)
+    {
+        DateTimeOffset startDayFixed = DateTime.SpecifyKind(startDay, DateTimeKind.Utc);
+        DateTimeOffset endDayFixed = DateTime.SpecifyKind(endDay, DateTimeKind.Utc);
+
+        return await _punches.Where((p) => DateTimeOffset.Compare(startDayFixed, p.Time) <= 0 && DateTimeOffset.Compare(p.Time, endDayFixed) <= 0).ToListAsync();
+    }
+
 }
