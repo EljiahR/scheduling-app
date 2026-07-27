@@ -54,5 +54,32 @@ public static class PunchEndpoints
 
             return TypedResults.Ok(newPunch);
         });
+
+        app.MapGet("/timecard/weekly", [Authorize] async (HttpContext context, string? dateAsString) => {
+            var user = context.User;
+
+            if (user?.Identity?.IsAuthenticated != true)
+            {
+                return Results.Unauthorized();
+            }
+
+            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Results.Unauthorized();
+            }
+            
+            if (string.IsNullOrWhiteSpace(dateAsString))
+            {
+                // get current week
+            }
+
+            if (DateTime.TryParse(dateAsString, out var parsedDate))
+            {
+                // get week of parsed date
+            }
+
+            return Results.BadRequest();
+        });
     }
 }
