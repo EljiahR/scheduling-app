@@ -15,4 +15,19 @@ public static class DateTimeHelpers
             timeToStrip.Kind
         );
     }
+
+    public static DateTime GetLastPossibleTime(DateTime time)
+    {
+        return StripSeconds(time).AddDays(1).AddTicks(-1);
+    }
+    
+    public static DateTime GetSpecificDayOfWeek(DateTime date, DayOfWeek dayOfWeek = DayOfWeek.Sunday)
+    {
+        var strippedDate = StripSeconds(date);
+        
+        var dayDiff = dayOfWeek - strippedDate.DayOfWeek; 
+        strippedDate.AddDays(dayDiff);
+        
+        return StripSeconds(date);
+    }
 }

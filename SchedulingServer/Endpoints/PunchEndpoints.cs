@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
+using SchedulingServer.Helpers;
 using SchedulingServer.Models;
 using SchedulingServer.Services;
 
@@ -55,7 +56,7 @@ public static class PunchEndpoints
             return TypedResults.Ok(newPunch);
         });
 
-        app.MapGet("/timecard/weekly", [Authorize] async (HttpContext context, string? dateAsString) => {
+        app.MapGet("/timecard/weekly", [Authorize] async (HttpContext context, string? dateAsString, IPunchService punchService) => {
             var user = context.User;
 
             if (user?.Identity?.IsAuthenticated != true)
@@ -72,11 +73,25 @@ public static class PunchEndpoints
             if (string.IsNullOrWhiteSpace(dateAsString))
             {
                 // get current week
+                var currentDay = new DateTime();
+
+                var currentWeekSunday = DateTimeHelpers.GetSpecificDayOfWeek(currentDay);
+                var currentWeekSaturday = DateTimeHelpers.GetLastPossibleTime(DateTimeHelpers.GetSpecificDayOfWeek(currentDay, DayOfWeek.Saturday));
+            
+                var punches = await punchService.GetUserPunchesInRangeAsync(userId, currentWeekSunday, currentWeekSaturday);
+
+                return Results.Ok(punches);
             }
 
             if (DateTime.TryParse(dateAsString, out var parsedDate))
             {
                 // get week of parsed date
+                var parsedWeekSunday = DateTimeHelpers.GetSpecificDayOfWeek(parsedDate);
+                var parsedWeekSaturday = DateTimeHelpers.GetLastPossibleTime(DateTimeHelpers.GetSpecificDayOfWeek(parsedDate, DayOfWeek.Saturday));
+            
+                var punches = await punchService.GetUserPunchesInRangeAsync(userId, parsedWeekSunday, parsedWeekSaturday);
+
+                return Results.Ok(punches);
             }
 
             return Results.BadRequest();
