@@ -11,7 +11,7 @@ export const apiGetTimeCard = async () => {
     }
 
     try {
-        const response = await api.get<Punch[]>("/timecard", {
+        const response = await api.get<Punch[]>("/timecard/weekly", {
             headers: {
                 "Authorization": `Bearer ${authToken}`
             }
