@@ -1,5 +1,5 @@
 import { stringNullUndefinedOrEmpty } from "../stringHelpers";
-import { Punch } from "../types/apiReturnTypes";
+import { DailyPunches, Punch } from "../types/apiReturnTypes";
 import { userStore } from "../userStore"
 import { api } from "./api"
 
@@ -11,7 +11,7 @@ export const apiGetTimeCard = async () => {
     }
 
     try {
-        const response = await api.get<Punch[]>("/timecard/weekly", {
+        const response = await api.get<DailyPunches[]>("/timecard/weekly", {
             headers: {
                 "Authorization": `Bearer ${authToken}`
             }

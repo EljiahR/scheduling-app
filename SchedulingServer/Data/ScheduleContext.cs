@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SchedulingServer.Models;
+using SchedulingServer.Models.Punches;
 using SchedulingServer.Models.RefreshToken;
 using SchedulingServer.Models.User;
 

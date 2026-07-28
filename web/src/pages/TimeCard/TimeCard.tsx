@@ -44,7 +44,12 @@ export default () => {
         }
     }
 
-    onMount(getCurrentWeek);
+    const initializeTimeCard = async() => {
+        getCurrentWeek();
+        await retrieveTimeCard();
+    }
+
+    onMount(initializeTimeCard);
     
     return (
         <div id={styles.timeCardPage}>

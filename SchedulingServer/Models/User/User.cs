@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using SchedulingServer.Models.Punches;
 
 namespace SchedulingServer.Models.User;
 

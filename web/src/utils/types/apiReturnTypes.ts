@@ -11,3 +11,8 @@ export interface Punch {
     inPunch: boolean;
     userId: string;
 }
+
+export interface DailyPunches {
+    day: string;
+    punches: Punch[];
+}

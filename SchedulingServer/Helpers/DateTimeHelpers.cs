@@ -23,11 +23,11 @@ public static class DateTimeHelpers
     
     public static DateTime GetSpecificDayOfWeek(DateTime date, DayOfWeek dayOfWeek = DayOfWeek.Sunday)
     {
-        var strippedDate = StripSeconds(date);
+        var strippedDate = date.Date;
         
         var dayDiff = dayOfWeek - strippedDate.DayOfWeek; 
         strippedDate.AddDays(dayDiff);
         
-        return StripSeconds(date);
+        return strippedDate;
     }
 }

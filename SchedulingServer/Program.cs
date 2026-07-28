@@ -97,8 +97,10 @@ if (app.Environment.IsDevelopment())
     
     using var scope = app.Services.CreateScope();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+    var punchService = scope.ServiceProvider.GetRequiredService<IPunchService>();
     Console.WriteLine("Seeding...");
     await Seeder.SeedUser(userManager, builder.Configuration["Seed:UserName"] ?? "Placeholder", builder.Configuration["Seed:Email"] ?? "admin@admin.com", builder.Configuration["Seed:Password"] ?? "Password0!");
+    await Seeder.SeedUserPunches(userManager, punchService, builder.Configuration["Seed:Email"] ?? "admin@admin.com");
 }
 
 app.Run();

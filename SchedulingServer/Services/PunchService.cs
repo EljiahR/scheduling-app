@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SchedulingServer.Data;
 using SchedulingServer.Helpers;
-using SchedulingServer.Models;
+using SchedulingServer.Models.Punches;
 
 namespace SchedulingServer.Services;
 
@@ -11,6 +11,31 @@ public class PunchServices(ScheduleContext context) : IPunchService
     public async Task<Punch?> SendPunchAsync(string userId, bool inPunch)
     {
         var currentTime = DateTimeHelpers.StripSeconds(DateTime.UtcNow);
+
+        // Checking for duplicate punches
+        var existingPunch = await _punches.FirstOrDefaultAsync((punch) => punch.Time == currentTime && userId == punch.UserId);
+
+        if (existingPunch != null)
+        {
+            return null;
+        }
+
+        var newPunch = new Punch
+        {
+            Time = currentTime,
+            InPunch = inPunch,
+            UserId = userId, 
+        };
+
+        await _punches.AddAsync(newPunch);
+        await context.SaveChangesAsync();
+
+        return newPunch;
+    }
+
+    public async Task<Punch?> SendPunchWithTimeAsync(string userId, bool inPunch, DateTime time)
+    {
+        var currentTime = DateTimeHelpers.StripSeconds(time);
 
         // Checking for duplicate punches
         var existingPunch = await _punches.FirstOrDefaultAsync((punch) => punch.Time == currentTime && userId == punch.UserId);

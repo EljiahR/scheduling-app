@@ -1,4 +1,4 @@
-namespace SchedulingServer.Models;
+namespace SchedulingServer.Models.Punches;
 
 public class Punch
 {
