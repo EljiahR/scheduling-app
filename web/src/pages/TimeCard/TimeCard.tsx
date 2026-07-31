@@ -1,4 +1,4 @@
-import { createSignal, onMount, Show } from "solid-js";
+import { createSignal, For, onMount, Show } from "solid-js";
 import styles from "./TimeCard.module.css";
 import { DailyPunches, Punch } from "../../utils/types/apiReturnTypes";
 import { apiGetTimeCard } from "../../utils/api/timecardApi";
@@ -63,48 +63,31 @@ export default () => {
                     <HeaderCell text="Out" />
                     <HeaderCell text="In" />
                     <HeaderCell text="Out" />
-                    {/* Sunday Row */}
-                    <DateCell text="Sunday" />
-                    <PunchCell text="" />
-                    <PunchCell text="" />
-                    <PunchCell text="" />
-                    <PunchCell text="" />
-                    {/* Monday Row */}
-                    <DateCell text="Monday" />
-                    <PunchCell text="" />
-                    <PunchCell text="" />
-                    <PunchCell text="" />
-                    <PunchCell text="" />
-                    {/* Tuesday Row */}
-                    <DateCell text="Tuesday" />
-                    <PunchCell text="" />
-                    <PunchCell text="" />
-                    <PunchCell text="" />
-                    <PunchCell text="" />
-                    {/* Wednesday Row */}
-                    <DateCell text="Wednesday" />
-                    <PunchCell text="" />
-                    <PunchCell text="" />
-                    <PunchCell text="" />
-                    <PunchCell text="" />
-                    {/* Thursday Row */}
-                    <DateCell text="Thursday" />
-                    <PunchCell text="" />
-                    <PunchCell text="" />
-                    <PunchCell text="" />
-                    <PunchCell text="" />
-                    {/* Friday Row */}
-                    <DateCell text="Friday" />
-                    <PunchCell text="" />
-                    <PunchCell text="" />
-                    <PunchCell text="" />
-                    <PunchCell text="" />
-                    {/* Saturday Row */}
-                    <DateCell text="Saturday" />
-                    <PunchCell text="" />
-                    <PunchCell text="" />
-                    <PunchCell text="" />
-                    <PunchCell text="" />
+                    <For each={timeCard()}>
+                        {(day) => {
+                            return (
+                                <>
+                                    <DateCell text={day.day} />
+                                    <For each={day.punches}>
+                                        {(punch) => {
+                                            let punchShouldBeIn = true;
+                                            if ((punchShouldBeIn && punch.inPunch) || (!punchShouldBeIn && !punch.inPunch)) {
+                                                punchShouldBeIn = !punchShouldBeIn;
+                                                return <PunchCell text={punch.time} />
+                                            } else {
+                                                return (
+                                                    <>
+                                                        <PunchCell text="" />
+                                                        <PunchCell text={punch.time} />
+                                                    </>
+                                                );
+                                            }
+                                        }}
+                                    </For>
+                                </>
+                            )
+                        }}
+                    </For>
                 </div>
             </Show>
         </div>
