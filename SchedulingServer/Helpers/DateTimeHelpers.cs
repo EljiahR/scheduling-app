@@ -18,16 +18,14 @@ public static class DateTimeHelpers
 
     public static DateTime GetLastPossibleTime(DateTime time)
     {
-        return StripSeconds(time).AddDays(1).AddTicks(-1);
+        return new DateTime(time.Year, time.Month, time.Day, 23, 59, 59);
     }
     
     public static DateTime GetSpecificDayOfWeek(DateTime date, DayOfWeek dayOfWeek = DayOfWeek.Sunday)
-    {
-        var strippedDate = date.Date;
+    {      
+        var dayDiff = dayOfWeek - date.DayOfWeek; 
+        var specificDay = date.AddDays(dayDiff);
         
-        var dayDiff = dayOfWeek - strippedDate.DayOfWeek; 
-        strippedDate.AddDays(dayDiff);
-        
-        return strippedDate;
+        return specificDay.Date;
     }
 }

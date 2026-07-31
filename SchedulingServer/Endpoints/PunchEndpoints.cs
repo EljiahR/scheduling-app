@@ -72,7 +72,7 @@ public static class PunchEndpoints
             if (string.IsNullOrWhiteSpace(dateAsString))
             {
                 // get current week
-                var currentDay = new DateTime();
+                var currentDay = DateTime.UtcNow;
 
                 var currentWeekSunday = DateTimeHelpers.GetSpecificDayOfWeek(currentDay);
                 var currentWeekSaturday = DateTimeHelpers.GetLastPossibleTime(DateTimeHelpers.GetSpecificDayOfWeek(currentDay, DayOfWeek.Saturday));

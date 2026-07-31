@@ -1,11 +1,12 @@
-import { createSignal, onMount } from "solid-js";
+import { createSignal, onMount, Show } from "solid-js";
 import styles from "./TimeCard.module.css";
-import { Punch } from "../../utils/types/apiReturnTypes";
+import { DailyPunches, Punch } from "../../utils/types/apiReturnTypes";
 import { apiGetTimeCard } from "../../utils/api/timecardApi";
+import LoadingBars from "../../components/LoadingBars";
 
 export default () => {
     const [loadingPage, setLoadingPage] = createSignal<boolean>(false);
-    const [punches, setPunches] = createSignal<Punch[]>([]);
+    const [timeCard, setTimeCard] = createSignal<DailyPunches[]>([]);
     const [selectedWeek, setSelectedWeek] = createSignal<Date[]>([]);
 
     const getCurrentWeek = () => {
@@ -34,9 +35,9 @@ export default () => {
     const retrieveTimeCard = async () => {
         try {
             setLoadingPage(true);
-            const timeCard = await apiGetTimeCard();
+            const punches = await apiGetTimeCard();
 
-            setPunches(timeCard);
+            setTimeCard(punches);
         } catch (e) {
             console.log("Unable to retrieve time card.");
         } finally {
@@ -53,57 +54,59 @@ export default () => {
     
     return (
         <div id={styles.timeCardPage}>
-            <div id={styles.options}></div>
-            <div id={styles.timeCardContainer}>
-                {/* Header Row */}
-                <EmptyCell />
-                <HeaderCell text="In" />
-                <HeaderCell text="Out" />
-                <HeaderCell text="In" />
-                <HeaderCell text="Out" />
-                {/* Sunday Row */}
-                <DateCell text="Sunday" />
-                <PunchCell text="" />
-                <PunchCell text="" />
-                <PunchCell text="" />
-                <PunchCell text="" />
-                {/* Monday Row */}
-                <DateCell text="Monday" />
-                <PunchCell text="" />
-                <PunchCell text="" />
-                <PunchCell text="" />
-                <PunchCell text="" />
-                {/* Tuesday Row */}
-                <DateCell text="Tuesday" />
-                <PunchCell text="" />
-                <PunchCell text="" />
-                <PunchCell text="" />
-                <PunchCell text="" />
-                {/* Wednesday Row */}
-                <DateCell text="Wednesday" />
-                <PunchCell text="" />
-                <PunchCell text="" />
-                <PunchCell text="" />
-                <PunchCell text="" />
-                {/* Thursday Row */}
-                <DateCell text="Thursday" />
-                <PunchCell text="" />
-                <PunchCell text="" />
-                <PunchCell text="" />
-                <PunchCell text="" />
-                {/* Friday Row */}
-                <DateCell text="Friday" />
-                <PunchCell text="" />
-                <PunchCell text="" />
-                <PunchCell text="" />
-                <PunchCell text="" />
-                {/* Saturday Row */}
-                <DateCell text="Saturday" />
-                <PunchCell text="" />
-                <PunchCell text="" />
-                <PunchCell text="" />
-                <PunchCell text="" />
-            </div>
+            <Show when={!loadingPage()} fallback={<LoadingBars />}>
+                <div id={styles.options}></div>
+                <div id={styles.timeCardContainer}>
+                    {/* Header Row */}
+                    <EmptyCell />
+                    <HeaderCell text="In" />
+                    <HeaderCell text="Out" />
+                    <HeaderCell text="In" />
+                    <HeaderCell text="Out" />
+                    {/* Sunday Row */}
+                    <DateCell text="Sunday" />
+                    <PunchCell text="" />
+                    <PunchCell text="" />
+                    <PunchCell text="" />
+                    <PunchCell text="" />
+                    {/* Monday Row */}
+                    <DateCell text="Monday" />
+                    <PunchCell text="" />
+                    <PunchCell text="" />
+                    <PunchCell text="" />
+                    <PunchCell text="" />
+                    {/* Tuesday Row */}
+                    <DateCell text="Tuesday" />
+                    <PunchCell text="" />
+                    <PunchCell text="" />
+                    <PunchCell text="" />
+                    <PunchCell text="" />
+                    {/* Wednesday Row */}
+                    <DateCell text="Wednesday" />
+                    <PunchCell text="" />
+                    <PunchCell text="" />
+                    <PunchCell text="" />
+                    <PunchCell text="" />
+                    {/* Thursday Row */}
+                    <DateCell text="Thursday" />
+                    <PunchCell text="" />
+                    <PunchCell text="" />
+                    <PunchCell text="" />
+                    <PunchCell text="" />
+                    {/* Friday Row */}
+                    <DateCell text="Friday" />
+                    <PunchCell text="" />
+                    <PunchCell text="" />
+                    <PunchCell text="" />
+                    <PunchCell text="" />
+                    {/* Saturday Row */}
+                    <DateCell text="Saturday" />
+                    <PunchCell text="" />
+                    <PunchCell text="" />
+                    <PunchCell text="" />
+                    <PunchCell text="" />
+                </div>
+            </Show>
         </div>
     )
 }

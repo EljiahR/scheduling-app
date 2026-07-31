@@ -12,14 +12,14 @@ const TimeCardPage = lazy(() => import("./pages/TimeCard"));
 const App: Component = () => {
   
   return (
-    // <ProtectedRoute>
+    <ProtectedRoute>
       <Router root={MainLayout}>
         <Route path={"/"} component={HomePage} />
         <Route path={"/time-card"} component={TimeCardPage} />
         <Route path={"manage-schedule"} component={ManageSchedulePage} />
         <Route path={"personal-schedule"} component={PersonalSchedulePage} />
       </Router>
-    // </ProtectedRoute>
+    </ProtectedRoute>
   );
 };
 
