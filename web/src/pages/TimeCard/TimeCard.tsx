@@ -1,4 +1,4 @@
-import { createSignal, For, onMount, Show } from "solid-js";
+import { createSignal, For, Match, onMount, Show, Switch } from "solid-js";
 import styles from "./TimeCard.module.css";
 import { DailyPunches, Punch } from "../../utils/types/apiReturnTypes";
 import { apiGetTimeCard } from "../../utils/api/timecardApi";
@@ -65,27 +65,7 @@ export default () => {
                     <HeaderCell text="Out" />
                     <For each={timeCard()}>
                         {(day) => {
-                            return (
-                                <>
-                                    <DateCell text={day.day} />
-                                    <For each={day.punches}>
-                                        {(punch) => {
-                                            let punchShouldBeIn = true;
-                                            if ((punchShouldBeIn && punch.inPunch) || (!punchShouldBeIn && !punch.inPunch)) {
-                                                punchShouldBeIn = !punchShouldBeIn;
-                                                return <PunchCell text={punch.time} />
-                                            } else {
-                                                return (
-                                                    <>
-                                                        <PunchCell text="" />
-                                                        <PunchCell text={punch.time} />
-                                                    </>
-                                                );
-                                            }
-                                        }}
-                                    </For>
-                                </>
-                            )
+                            return <></>
                         }}
                     </For>
                 </div>
