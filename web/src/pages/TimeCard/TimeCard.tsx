@@ -3,6 +3,7 @@ import styles from "./TimeCard.module.css";
 import { DailyPunches, Punch } from "../../utils/types/apiReturnTypes";
 import { apiGetTimeCard } from "../../utils/api/timecardApi";
 import LoadingBars from "../../components/LoadingBars";
+import { dateToPunchFormat, dateToTimeCardHeaderFormat } from "../../utils/dateHelpers";
 
 export default () => {
     const [loadingPage, setLoadingPage] = createSignal<boolean>(false);
@@ -65,7 +66,52 @@ export default () => {
                     <HeaderCell text="Out" />
                     <For each={timeCard()}>
                         {(day) => {
-                            return <></>
+                            let inPunchExpected = false;
+                            let addBlank = false;
+                            let isLastPunch = false;
+                            let cellIndex = -1;
+                            let remainingRow: null[] = [];
+                            return <For each={day.punches}>
+                                {(punch, punchIndex) => {
+                                   addBlank = false;
+                                   cellIndex++;
+                                   inPunchExpected = !inPunchExpected;
+
+                                   if ((punch.inPunch && !inPunchExpected) || (!punch.inPunch && inPunchExpected)) {
+                                        addBlank = true;
+                                        inPunchExpected = !inPunchExpected;
+                                        cellIndex++;
+                                   }
+
+                                   if (punchIndex() === day.punches.length - 1) {
+                                        isLastPunch = true;
+                                        const numberOfCells = 4 - ((cellIndex + 1) % 4);
+                                        remainingRow = new Array(numberOfCells === 4 ? 0 : numberOfCells);
+                                   }
+                                   
+                                   return <>
+                                        <Show when={cellIndex === 0}>
+                                            <DateCell date={day.day} />
+                                        </Show>
+                                        <Show when={cellIndex !== 0 && cellIndex % 4 === 0}>
+                                            <DateCell />
+                                        </Show>
+
+                                        <Show when={addBlank}>
+                                            <PunchCell />
+                                        </Show>
+
+                                        <PunchCell date={punch.time} />
+
+                                        <Show when={isLastPunch}>
+                                            <For each={remainingRow}>
+                                                {() => <PunchCell />}
+                                            </For>
+                                        </Show>
+                                    </>
+                                    
+                                }}
+                            </For>
                         }}
                     </For>
                 </div>
@@ -75,7 +121,11 @@ export default () => {
 }
 
 interface TextProps {
-    text?: string
+    text?: string;
+}
+
+interface DateProps {
+    date?: Date
 }
 
 const EmptyCell = () => {
@@ -86,10 +136,10 @@ const HeaderCell = ({ text }: TextProps) => {
     return <div class={styles.headerCell}>{text ?? ""}</div>
 }
 
-const DateCell = ({ text }: TextProps) => {
-    return <div class={styles.dateCell}>{text ?? ""}</div>
+const DateCell = ({ date }: DateProps) => {
+    return <div class={styles.dateCell}>{dateToTimeCardHeaderFormat(date) ?? ""}</div>
 }
 
-const PunchCell = ({ text }: TextProps) => {
-    return <div class={styles.punchCell}>{text ?? ""}</div>
+const PunchCell = ({ date }: DateProps) => {
+    return <div class={styles.punchCell}>{dateToPunchFormat(date) ?? ""}</div>
 }

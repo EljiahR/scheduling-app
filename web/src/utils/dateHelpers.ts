@@ -8,12 +8,21 @@ export const convertStringToDate = (dateString: string | null) => {
     return new Date(dateString);
 }
 
-export const dateToPunchFormat = (date: Date | null) => {
-    if (date === null) {
+export const dateToPunchFormat = (date: Date | null | undefined) => {
+    if (date === null || date === undefined) {
         return null;
     }
     
-    const formatter = Intl.DateTimeFormat('en-US', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+    const formatter = Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: 'numeric' })
     
+    return formatter.format(date); 
+}
+
+export const dateToTimeCardHeaderFormat = (date: Date | null | undefined) => {
+    if (date === null || date === undefined) {
+        return null;
+    }
+
+    const formatter = Intl.DateTimeFormat('en-US', { weekday: 'short', month: 'numeric', day: 'numeric'})
     return formatter.format(date); 
 }

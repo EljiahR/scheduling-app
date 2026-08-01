@@ -1,5 +1,5 @@
 import { stringNullUndefinedOrEmpty } from "../stringHelpers";
-import { DailyPunches, Punch } from "../types/apiReturnTypes";
+import { DailyPunches, DailyPunchesDto, Punch } from "../types/apiReturnTypes";
 import { userStore } from "../userStore"
 import { api } from "./api"
 
@@ -11,14 +11,26 @@ export const apiGetTimeCard = async () => {
     }
 
     try {
-        const response = await api.get<DailyPunches[]>("/timecard/weekly", {
+        const response = await api.get<DailyPunchesDto[]>("/timecard/weekly", {
             headers: {
                 "Authorization": `Bearer ${authToken}`
             }
         });
 
         if (response.status === 200) {
-            return response.data;
+            const convertedDate = response.data.map<DailyPunches>((daily) => {
+                return {
+                    day: new Date(daily.day),
+                    punches: daily.punches.map((punch) => {
+                        return {
+                            ...punch,
+                            time: new Date(punch.time)
+                        }
+                    })
+                }
+            });
+            
+            return convertedDate;
         } else {
             throw new Error("Error retrieving timecard.");
         }

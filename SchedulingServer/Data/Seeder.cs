@@ -44,7 +44,8 @@ public static class Seeder
         await punchService.SendPunchWithTimeAsync(existingUser.Id, false, DateTime.UtcNow.AddDays(-7).AddHours(4));
 
         await punchService.SendPunchWithTimeAsync(existingUser.Id, true, DateTime.UtcNow.AddDays(-3));
-        await punchService.SendPunchWithTimeAsync(existingUser.Id, false, DateTime.UtcNow.AddDays(-3).AddHours(4));
+        await punchService.SendPunchWithTimeAsync(existingUser.Id, true, DateTime.UtcNow.AddDays(-3).AddHours(4));
+        await punchService.SendPunchWithTimeAsync(existingUser.Id, true, DateTime.UtcNow.AddDays(-3).AddHours(6));
 
         await punchService.SendPunchWithTimeAsync(existingUser.Id, true, DateTime.UtcNow.AddDays(-2));
         await punchService.SendPunchWithTimeAsync(existingUser.Id, false, DateTime.UtcNow.AddDays(-2).AddHours(4));

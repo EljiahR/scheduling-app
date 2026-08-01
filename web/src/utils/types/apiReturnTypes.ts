@@ -5,14 +5,26 @@ export interface UserSignInDto {
     lastPunch: string | null;
 }
 
-export interface Punch {
+export interface PunchDto {
     id: string;
     time: string;
     inPunch: boolean;
     userId: string;
 }
 
-export interface DailyPunches {
+export interface Punch {
+    id: string;
+    time: Date;
+    inPunch: boolean;
+    userId: string;
+}
+
+export interface DailyPunchesDto {
     day: string;
+    punches: PunchDto[];
+}
+
+export interface DailyPunches {
+    day: Date;
     punches: Punch[];
 }
