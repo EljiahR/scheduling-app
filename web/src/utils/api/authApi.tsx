@@ -6,7 +6,6 @@ import { api } from "./api";
 export const apiRefreshToken = async () => {
     const existingRefreshToken = localStorage.getItem("refreshToken");
     const storedId = localStorage.getItem("userId");
-    console.log("Refresh token: " + existingRefreshToken);
     if (!stringNullUndefinedOrEmpty(existingRefreshToken) && !stringNullUndefinedOrEmpty(storedId)) {
         try {
             const response = await api.post<UserSignInDto>("/auth/refresh", {

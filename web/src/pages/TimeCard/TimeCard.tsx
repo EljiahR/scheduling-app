@@ -47,7 +47,7 @@ export default () => {
     }
 
     const initializeTimeCard = async() => {
-        getCurrentWeek();
+        // getCurrentWeek();
         await retrieveTimeCard();
     }
 

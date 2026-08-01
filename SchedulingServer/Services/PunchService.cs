@@ -60,14 +60,16 @@ public class PunchServices(ScheduleContext context) : IPunchService
 
     public async Task<Punch?> GetUserLastPunchAsync(string userId)
     {
-        var punches = await _punches.OrderBy((punch) => punch.InPunch).ToListAsync();
+        var punches = await _punches.ToListAsync();
 
         if (punches.Count == 0)
         {
             return null;
         }
+        
+        var orderpunches = punches.OrderByDescending((punch) => punch.Time).ToList();
 
-        return punches[0];
+        return orderpunches[0];
     }
 
     public async Task<IEnumerable<Punch>> GetUserAllPunchesAsync(string userId)

@@ -40,6 +40,12 @@ public static class Seeder
             return;
         }
 
+        var existingPunch = await punchService.GetUserLastPunchAsync(existingUser.Id);
+        if (existingPunch != null) 
+        {
+            return;
+        }
+
         await punchService.SendPunchWithTimeAsync(existingUser.Id, true, DateTime.UtcNow.AddDays(-7));
         await punchService.SendPunchWithTimeAsync(existingUser.Id, false, DateTime.UtcNow.AddDays(-7).AddHours(4));
 

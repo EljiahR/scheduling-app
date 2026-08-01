@@ -13,7 +13,6 @@ export const setUserStoreFromResponse = (userInfo: UserSignInDto) => {
     setUserStore("accessToken", userInfo.accessToken);
     setUserStore("userId", userInfo.userId);
     setUserStore("lastPunch", convertStringToDate(userInfo.lastPunch));
-    console.log(userStore.lastPunch);
     localStorage.setItem("userId", userInfo.userId);
     localStorage.setItem("refreshToken", userInfo.refreshToken);
     setUserStore("loggedIn", true);
