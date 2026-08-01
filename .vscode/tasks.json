@@ -58,5 +58,38 @@
             "dependsOn": ["Start Web Client", "Start Server"],
             "dependsOrder": "parallel"
         },
+        {
+            "label": "Kill Ports",
+            "type": "shell",
+            "command": "/bin/bash",
+            "args": ["${workspaceFolder}/scripts/port_cleanup.sh"],
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            }
+        },
+        {
+            "label": "RM Test DB",
+            "type": "shell",
+            "command": "/bin/bash",
+            "args": ["${workspaceFolder}/scripts/db_cleanup.sh"],
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            }
+        },
+        {
+            "label": "Clean Project",
+            "dependsOn": ["Kill Ports", "RM Test DB"],
+            "dependsOrder": "sequence"
+        },
     ]
 }
