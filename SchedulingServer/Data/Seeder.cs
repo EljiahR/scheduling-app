@@ -46,17 +46,19 @@ public static class Seeder
             return;
         }
 
-        await punchService.SendPunchWithTimeAsync(existingUser.Id, true, DateTime.UtcNow.AddDays(-7));
-        await punchService.SendPunchWithTimeAsync(existingUser.Id, false, DateTime.UtcNow.AddDays(-7).AddHours(4));
+        var currentDateNoTime = DateTime.UtcNow.Date;
 
-        await punchService.SendPunchWithTimeAsync(existingUser.Id, true, DateTime.UtcNow.AddDays(-3));
-        await punchService.SendPunchWithTimeAsync(existingUser.Id, true, DateTime.UtcNow.AddDays(-3).AddHours(4));
-        await punchService.SendPunchWithTimeAsync(existingUser.Id, true, DateTime.UtcNow.AddDays(-3).AddHours(6));
+        await punchService.SendPunchWithTimeAsync(existingUser.Id, true, currentDateNoTime.AddDays(-7).AddHours(12));
+        await punchService.SendPunchWithTimeAsync(existingUser.Id, false, currentDateNoTime.AddDays(-7).AddHours(16));
 
-        await punchService.SendPunchWithTimeAsync(existingUser.Id, true, DateTime.UtcNow.AddDays(-2));
-        await punchService.SendPunchWithTimeAsync(existingUser.Id, false, DateTime.UtcNow.AddDays(-2).AddHours(4));
+        await punchService.SendPunchWithTimeAsync(existingUser.Id, true, currentDateNoTime.AddDays(-3).AddHours(12));
+        await punchService.SendPunchWithTimeAsync(existingUser.Id, true, currentDateNoTime.AddDays(-3).AddHours(16));
 
-        await punchService.SendPunchWithTimeAsync(existingUser.Id, true, DateTime.UtcNow.AddDays(-1));
-        await punchService.SendPunchWithTimeAsync(existingUser.Id, false, DateTime.UtcNow.AddDays(-1).AddHours(4));
+        await punchService.SendPunchWithTimeAsync(existingUser.Id, true, currentDateNoTime.AddDays(-2).AddHours(12));
+        await punchService.SendPunchWithTimeAsync(existingUser.Id, false, currentDateNoTime.AddDays(-2).AddHours(16));
+
+        await punchService.SendPunchWithTimeAsync(existingUser.Id, true, currentDateNoTime.AddDays(-1).AddHours(12));
+        await punchService.SendPunchWithTimeAsync(existingUser.Id, true, currentDateNoTime.AddDays(-1).AddHours(16));
+        await punchService.SendPunchWithTimeAsync(existingUser.Id, true, currentDateNoTime.AddDays(-1).AddHours(20));
     }
 }

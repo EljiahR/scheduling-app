@@ -21,3 +21,13 @@
 #timeCardContainer > * {
     background-color: white;
 }
+
+.errorPunchCell {
+    padding: 2px;
+}
+
+.errorFiller {
+    background-color: red;
+    height: 100%;
+    width: 100%;
+}

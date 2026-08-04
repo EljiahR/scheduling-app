@@ -143,3 +143,7 @@ const DateCell = ({ date }: DateProps) => {
 const PunchCell = ({ date }: DateProps) => {
     return <div class={styles.punchCell}>{dateToPunchFormat(date) ?? ""}</div>
 }
+
+const ErrorPunchCell = () => {
+    return <div class={styles.errorPunchCell}><div class={styles.errorFiller}></div></div>
+}
